@@ -38,19 +38,20 @@ def preprocess_data():
     verbose = args["verbose"]
 
     assert os.path.exists(input_dir), "Invalid input directory path provided"
-    assert os.path.exists(os.path.dirname(output_filename)), \
-        "Invalid output path provided"
+    if not os.path.exists(os.path.dirname(output_filename)):
+        os.makedirs(os.path.dirname(output_filename))
+    assert os.path.exists(os.path.dirname(output_filename)), "Invalid output path provided"
 
     # Starting dataset retrieval
     print("##### preprocess_data: Preprocessing datasets")
     if verbose: print(f"Running preprocess_data with arguments: \n {args}")
 
-    raw_files = glob.glob(f"{input_dir}/*.csv")
+    raw_csv_files = glob.glob(f"{input_dir}/*.csv")
 
-    characters = pd.concat([pd.read_csv(file) for file in raw_files],
+    characters_data = pd.concat([pd.read_csv(file) for file in raw_csv_files],
         ignore_index=True)
 
-    characters.to_csv(output_filename)
+    characters_data.to_csv(output_filename)
 
     print("##### preprocess_data: Finished preprocessing")
 
