@@ -60,6 +60,9 @@ def get_datasets():
     verbose = args["verbose"]
 
     assert input, "Empty input argument provided"
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
     assert os.path.exists(output_path), "Invalid output path provided"
 
     # Starting dataset retrieval
