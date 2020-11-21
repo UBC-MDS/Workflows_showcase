@@ -17,7 +17,6 @@ args = docopt(__doc__)
 
 def preprocess_data():
     # Setup script argument parsing
-    print(args)
     input_dir = args["--input"]
     output_filename = args["--output"]
     verbose = args["-v"]
