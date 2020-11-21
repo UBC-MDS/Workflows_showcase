@@ -56,7 +56,6 @@ def preprocess_data():
         publisher_df.columns = publisher_df.columns.str.lower().str.replace(' ', '_')
         publisher_df = publisher_df.drop(["page_id",
                                           "urlslug",
-                                          "id",
                                           "alive"], axis=1)
         publisher_df['publisher'] = publisher
         publisher_dfs.append(publisher_df)
