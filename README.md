@@ -27,12 +27,12 @@ The data is split into two files, for DC and Marvel, respectively: dc-wikia-data
 
 ### Usage and Flowchart
 
-Collect datasets from source:
+The datasets are collected from the source below.
 `
 python src/get_datasets.py -i https://github.com/rudeboybert/fivethirtyeight/tree/master/data-raw/comic-characters -o data/raw -g -v
 `
 
-Preprocess raw datasets:
+The row datasets can be processed by using the following command:
 `
 python src/preprocess_data.py -i data/raw -o data/processed/clean_characters.csv -v
 `
@@ -41,7 +41,7 @@ python src/preprocess_data.py -i data/raw -o data/processed/clean_characters.csv
 
 ### Dependencies
 
-To reproduce, see dependencies in [environment file](https://github.com/UBC-MDS/Workflows_showcase/blob/main/env/env.yaml).
+To reproduce, please see dependencies in [environment file](https://github.com/UBC-MDS/Workflows_showcase/blob/main/env/env.yaml).
 
 ### References
 
