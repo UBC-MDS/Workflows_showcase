@@ -23,7 +23,7 @@ The data is split into two files, for DC and Marvel, respectively: dc-wikia-data
 
 ### Releases
 
-[Milestone 1: 0.0.1](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/v1.0)
+[Milestone 1: 0.0.1](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.0.1)
 
 ### Usage and Flowchart
 
