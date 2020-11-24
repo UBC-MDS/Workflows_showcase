@@ -11,6 +11,9 @@ Options:
 import os
 import glob
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from datetime import datetime
 from docopt import docopt
 args = docopt(__doc__)
 
@@ -25,6 +28,9 @@ def preprocess_data():
     if not os.path.exists(os.path.dirname(output_filename)):
         os.makedirs(os.path.dirname(output_filename))
     assert os.path.exists(os.path.dirname(output_filename)), "Invalid output path provided"
+
+    output_file_slug = output_filename.split(".")[0]
+    output_file_ext = output_filename.split(".")[-1]
 
     # Starting dataset retrieval
     print("##### preprocess_data: Preprocessing datasets")
@@ -42,6 +48,23 @@ def preprocess_data():
                                           "urlslug",
                                           "alive"], axis=1)
         publisher_df['publisher'] = publisher
+
+        if publisher == "dc":
+            dateFormat='%Y, %B'
+        else:
+            dateFormat='%b-%y'
+
+        publisher_df['first_appearance'] = pd.to_datetime(
+            publisher_df['first_appearance'],
+            format=dateFormat,
+            errors='coerce')
+    
+        # The datetime parser sees years < 1970 as 2000's...Convert back
+        publisher_df['first_appearance'] = np.where(
+            (publisher_df['first_appearance'].dt.year > datetime.now().year),
+            publisher_df['first_appearance'] - pd.DateOffset(years=100),
+            publisher_df['first_appearance'])
+
         publisher_dfs.append(publisher_df)
 
     characters_data = pd.concat(publisher_dfs, ignore_index=True)
@@ -54,17 +77,33 @@ def preprocess_data():
     characters_data['hair'] = (characters_data['hair'].str.split(' ').str[0]).astype("category")
     characters_data['sex'] = (characters_data['sex'].str.split(' ').str[0]).astype("category")
     characters_data['gsm'] = (characters_data['gsm'].str.split(' ').str[0]).astype("category")
-    characters_data['first_appearance' ]= pd.to_datetime(characters_data['first_appearance'],
-                                                        format='%b-%y',
-                                                        errors='coerce')
+
     characters_data['year'] = pd.to_datetime(characters_data['year'],
-                                            format="%Y",
-                                            errors='coerce')
+                                             format="%Y",
+                                             errors='coerce').dt.year
     characters_data['publisher'] = characters_data['publisher'].astype("category")
 
+    if verbose: print(f"Writing full data output file: {output_filename}")
     characters_data.to_csv(output_filename)
     if verbose: print("\nOutput data summary:")
     if verbose: print(f"{characters_data.info()}")
+
+    # Creating deployment data file from rows missing target values")
+    deploy_df = characters_data[characters_data['align'].isnull()]
+    deploy_df.to_csv(output_file_slug + "_deploy." + output_file_ext)
+    characters_data = characters_data[characters_data['align'].notna()]
+
+    # Split train and test data
+    train_df, test_df = train_test_split(characters_data, test_size=0.3, random_state=123)
+    train_df.to_csv(output_file_slug + "_train." + output_file_ext)
+    test_df.to_csv(output_file_slug + "_test." + output_file_ext)
+
+    if verbose:
+        print(f"Wrote deployment data output file: {output_file_slug}_deploy.{output_file_ext}")
+    if verbose:
+        print(f"Wrote train data output file: {output_file_slug}_train.{output_file_ext}")
+    if verbose:
+        print(f"Wrote test data output file: {output_file_slug}_test.{output_file_ext}")
 
     print("##### preprocess_data: Finished preprocessing")
 
