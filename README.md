@@ -21,6 +21,8 @@ The data is split into two files, for DC and Marvel, respectively: dc-wikia-data
 
 `page_id, name, urlslug, ID, ALIGN, EYE, HAIR, SEX, GSM, ALIVE, APPEARANCES, FIRST APPEARANCE, YEAR`
 
+![Project Overview](img/project_overview_00.png)
+
 ### Releases
 
 [Milestone 1: 0.0.1](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.0.1)
