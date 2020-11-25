@@ -1,5 +1,5 @@
 # Workflows_showcase
-## Comic Book Character Align Predictor
+## Comic Book Character Alignment Predictor
 This is Group 25's project for DSCI 522(Data Science Workflows); which is a course in the MDS(Master of Data Science) program at the University of British Columbia.
 
 ### Authors
@@ -37,6 +37,10 @@ python src/get_datasets.py -i https://github.com/rudeboybert/fivethirtyeight/tre
 The row datasets can be processed by using the following command:
 `
 python src/preprocess_data.py -i data/raw -o data/processed/clean_characters.csv -v
+`
+The eda.py image generator
+`
+python src/eda.py -i "data/processed/clean_characters.csv" -o "img"
 `
 
 ![Flow Chart](img/flow_chart00.png)

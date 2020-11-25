@@ -72,8 +72,7 @@ def preprocess_data():
     # There is some weird comic book multiverse stuff going on with this... We
     # can't remove the bracket aliases without creating duplicate entries
     #characters_data['name'] = characters_data['name'].str.split('(').str[0]
-    characters_data['align'] = \
-        characters_data.loc[characters_data['align'] == "Reformed", "align"] = "Good"
+    characters_data['align'] = characters_data['align'].replace(regex ="Reformed", value = "Good")
     characters_data['align'] = (characters_data['align'].str.split(' ').str[0]).astype("category")
     characters_data['eye'] = (characters_data['eye'].str.split(' ').str[0]).astype("category")
     characters_data['hair'] = (characters_data['hair'].str.split(' ').str[0]).astype("category")
