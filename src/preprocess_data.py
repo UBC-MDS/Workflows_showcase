@@ -72,6 +72,8 @@ def preprocess_data():
     # There is some weird comic book multiverse stuff going on with this... We
     # can't remove the bracket aliases without creating duplicate entries
     #characters_data['name'] = characters_data['name'].str.split('(').str[0]
+    characters_data['align'] = \
+        characters_data.loc[characters_data['align'] == "Reformed", "align"] = "Good"
     characters_data['align'] = (characters_data['align'].str.split(' ').str[0]).astype("category")
     characters_data['eye'] = (characters_data['eye'].str.split(' ').str[0]).astype("category")
     characters_data['hair'] = (characters_data['hair'].str.split(' ').str[0]).astype("category")
@@ -94,7 +96,7 @@ def preprocess_data():
     characters_data = characters_data[characters_data['align'].notna()]
 
     # Split train and test data
-    train_df, test_df = train_test_split(characters_data, test_size=0.3, random_state=123)
+    train_df, test_df = train_test_split(characters_data, test_size=0.2, random_state=123)
     train_df.to_csv(output_file_slug + "_train." + output_file_ext)
     test_df.to_csv(output_file_slug + "_test." + output_file_ext)
 
