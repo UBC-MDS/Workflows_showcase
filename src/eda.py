@@ -94,8 +94,9 @@ def generate_dataset_overview(data_frame, output_folder, file_name):
         ]
     overview_frame = pd.DataFrame(data_overview)
     fig_1, ax_1 = render_table(overview_frame, header_columns=0, col_width=5)
+    fig_1.savefig(output_folder +"/"+ file_name)
 
-    return fig_1.savefig(output_folder +"/"+ file_name)
+    return overview_frame
 
 def generate_feature_overview(data_frame, output_folder, file_name):
     """
@@ -121,13 +122,14 @@ def generate_feature_overview(data_frame, output_folder, file_name):
     for col in data_frame.columns:
         nonnull_count[col]=len(data_frame)-data_frame[col].isnull().sum()
         distinct_class[col]=len(list(data_frame[col].unique()))
-    data_frame2=pd.DataFrame([distinct_class, nonnull_count]).T.reset_index()
-    data_frame2.columns=["Features","Dictinct Class", "Non-Null Count"]
-    data_frame2["Missing Percentage"]=round((len(data_frame) - data_frame2["Non-Null Count"])/len(data_frame)*100,2)
+    features_frame=pd.DataFrame([distinct_class, nonnull_count]).T.reset_index()
+    features_frame.columns=["Features","Dictinct Class", "Non-Null Count"]
+    features_frame["Missing Percentage"]=round((len(data_frame) - features_frame["Non-Null Count"])/len(data_frame)*100,2)
 
-    fig_2, ax_2 = render_table(data_frame2, header_columns=0, col_width=3)
+    fig_2, ax_2 = render_table(features_frame, header_columns=0, col_width=3)
+    fig_2.savefig(output_folder +"/"+ file_name)
 
-    return fig_2.savefig(output_folder +"/"+ file_name)
+    return features_frame
 
 
 
