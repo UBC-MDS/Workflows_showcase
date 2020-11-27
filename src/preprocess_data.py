@@ -1,5 +1,5 @@
 """
-Retrieve datasets from a URL, file of URLs, or GitHub directory URL
+Preprocess raw comic character datasets for analysis
 
 Usage: preprocess_data.py -i=<input> -o=<output> [-v]
 
