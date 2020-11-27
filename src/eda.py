@@ -4,8 +4,8 @@ This script reads combined data and generates images and tables to be used in fu
 Usage: eda.py -i=<input> -o=<output> [-v]
 
 Options:
--i <input>, --input <input>     Local raw data csv file directory
--o <output>, --output <output>  Local output filename and path for preprocessed csv
+-i <input>, --input <input>     Local raw data csv filename and path
+-o <output>, --output <output>  Local output directory for created png
 [-v]                            Report verbose output of dataset retrieval process
 """
 
@@ -15,27 +15,11 @@ import sys
 import os
 import numpy as np
 import pandas as pd
-#import altair as alt
+import altair as alt
 import matplotlib.pyplot as plt
-#import seaborn as sns
-from pathlib import Path
 from docopt import docopt
-from pylab import savefig
-#from selenium import webdriver
-import matplotlib.pyplot as plt
-print("start")
+from render_table import render_table
 args = docopt(__doc__)
-#from webdriver_manager.chrome import ChromeDriverManager
-
-#from altair import pipe, limit_rows, to_values
-#from pandas_profiling.report.presentation.core import Table, Container
-
-#t = lambda data: pipe(data, limit_rows(max_rows=20000), to_values)
-#alt.data_transformers.register('custom', t)
-#alt.data_transformers.enable('custom')
-
-IMAGE_FOLDER = 'images'
-#DATA_FOLDER = 'data'
 
 def read_input_file(input_file_path):
     """
@@ -56,9 +40,9 @@ def read_input_file(input_file_path):
 
     try:
         data_frame = pd.read_csv(input_file_path, index_col=0)
-        print('Path is valid')
+        print('Path is valid.')
     except:
-        print(input_file_path + 'Path is not valid. Please check ')
+        print(input_file_path + 'Path is not valid. Please check!')
         sys.exit()
 
     combined_columns = ['name', 'id', 'align', 'eye', 'hair', 'sex', 'gsm','appearances', 'first_appearance', 'year', 'publisher']
@@ -67,59 +51,8 @@ def read_input_file(input_file_path):
         print(input_file_path + " should contain these columns: " + str(combined_columns))
         sys.exit()
 
-    print('Returning data frame')
+    print('Creating and returning data frame.')
     return data_frame
-
-def render_mpl_table(data, col_width=3.0, row_height=0.625, font_size=14,
-                     header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
-                     bbox=[0, 0, 1, 1], header_columns=0,
-                     ax=None, **kwargs):
-    """[Taken from ref: https://stackoverflow.com/questions/19726663/how-to-save-the-pandas-dataframe-series-data-as-a-figure]
-       [Prints given data in a nice format, that is easy to save]
-    Parameters
-    ----------
-    data : [data frame]
-        [data frame]
-    col_width : float, optional
-        [column width], by default 3.0
-    row_height : float, optional
-        [row height], by default 0.625
-    font_size : int, optional
-        [font size], by default 14
-    header_color : str, optional
-        [header color], by default '#40466e'
-    row_colors : list, optional
-        [row color], by default ['#f1f1f2', 'w']
-    edge_color : str, optional
-        [edge color], by default 'w'
-    bbox : list, optional
-        [bbox ], by default [0, 0, 1, 1]
-    header_columns : int, optional
-        [header columns], by default 0
-    ax : [type], optional
-        [plotting table, by default None
-
-    Returns
-    -------
-    [object]
-        [figure]
-    """
-    if ax is None:
-        size = (np.array(data.shape[::-1]) + np.array([0, 1])) * np.array([col_width, row_height])
-        fig, ax = plt.subplots(figsize=size)
-        ax.axis('off')
-    mpl_table = ax.table(cellText=data.values, bbox=bbox, colLabels=data.columns, **kwargs)
-    mpl_table.auto_set_font_size(False)
-    mpl_table.set_fontsize(font_size)
-
-    for k, cell in mpl_table._cells.items():
-        cell.set_edgecolor(edge_color)
-        if k[0] == 0 or k[1] < header_columns:
-            cell.set_text_props(weight='bold', color='w')
-            cell.set_facecolor(header_color)
-        else:
-            cell.set_facecolor(row_colors[k[0]%len(row_colors) ])
-    return ax.get_figure(), ax
 
 def generate_dataset_overview(data_frame, output_folder, file_name):
     """
@@ -146,9 +79,12 @@ def generate_dataset_overview(data_frame, output_folder, file_name):
             {"Dataset": "Percentage of Missing cells", "Value": round((data_frame.isnull()).sum().sum()/data_frame.size*100, 2)}
         ]
     overview_frame = pd.DataFrame(data_overview)
-    fig_1, ax_1 = render_mpl_table(overview_frame, header_columns=0, col_width=5)
+    fig_1, ax_1 = render_table(overview_frame, header_columns=0, col_width=5)
+    fig_1.savefig(output_folder + "/" + file_name)
+    print("Saving overview table.")
 
-    return fig_1.savefig(output_folder +"/"+ file_name)
+    return overview_frame
+
 def generate_feature_overview(data_frame, output_folder, file_name):
     """
     Generates an overview of the features in dataset.
@@ -167,36 +103,125 @@ def generate_feature_overview(data_frame, output_folder, file_name):
     object
         saved .png file
     """
-    dict2 = dict()
-    dict3=dict()
+    distinct_class = dict()
+    nonnull_count = dict()
 
     for col in data_frame.columns:
-        dict2[col]=len(data_frame)-data_frame[col].isnull().sum()
-        dict3[col]=len(list(data_frame[col].unique()))
-    data_frame2=pd.DataFrame([dict3, dict2]).T.reset_index()
-    data_frame2.columns=["Features","Dictinct Class", "Non-Null Count"]
-    data_frame2["Missing Percentage"]=round((len(data_frame) - data_frame2["Non-Null Count"])/len(data_frame)*100,2)
+        nonnull_count[col]=len(data_frame)-data_frame[col].isnull().sum()
+        distinct_class[col]=len(list(data_frame[col].unique()))
 
-    fig_2, ax_2 = render_mpl_table(data_frame2, header_columns=0, col_width=3)
+    features_frame=pd.DataFrame([distinct_class, nonnull_count]).T.reset_index()
+    features_frame.columns=["Features","Dictinct Class", "Non-Null Count"]
+    features_frame["Missing Percentage"]=round((len(data_frame) - features_frame["Non-Null Count"])/len(data_frame)*100,2)
 
-    return fig_2.savefig(output_folder +"/"+ file_name)
+    fig_2, ax_2 = render_table(features_frame, header_columns=0, col_width=3)
+    fig_2.savefig(output_folder +"/"+ file_name)
+    print("Saving features overview table.")
 
+    return features_frame
 
+def generate_align_vs_features(data_frame, output_folder, file_name):
+    """
+    Generates a chart of the relation between align and other features in dataset.
+    Also saves resulting image as file in given output folder.
+    Parameters:
+    -----------
+    data_frame : pandas.DataFrame
+        input path to be verified
+    output_folder : str
+        output folder path to save the chart
+    file_name : str
+        file name for generated chart image
+        
+    Returns:
+    -----------
+    object
+        saved .png file
+    """
+    features = ['id', 'eye', 'hair', 'sex', 'gsm', 'publisher']
+    align_vs_features = (alt.Chart(data_frame).mark_circle().encode(
+        alt.Y(alt.repeat(), type='ordinal'),
+        alt.X('count()', title = "Character Count"),
+        size =alt.Size('count()', legend=alt.Legend(title="Characters")),
+        color = alt.Color("align", legend=alt.Legend(title="Alignment"))
+        ).properties(height=300, width=200).repeat(repeat=features, columns=3))
 
-def maint(input_file_path, output_folder_path):
+    print("Align vs Features chart created, saving as html.")
+    return align_vs_features.save(output_folder + "/" + file_name + ".html", scale_factor = 2)
+
+def generate_align_vs_year(data_frame, output_folder, file_name):
+    """
+    Generates a chart of the relation between align and year in dataset.
+    Also saves resulting image as file in given output folder.
+    Parameters:
+    -----------
+    data_frame : pandas.DataFrame
+        input path to be verified
+    output_folder : str
+        output folder path to save the chart
+    file_name : str
+        file name for generated chart image
+        
+    Returns:
+    -----------
+    object
+        saved .png file
+    """
+    align_vs_year = (alt.Chart(data_frame, title = "Alignment over Time").mark_line().encode(
+        alt.X('year:T', title = 'Year(1935-2013)'),
+        y = alt.Y('count()', title = "Character Count"),
+        color = alt.Color("align", title="Alignment"),
+        tooltip = 'year'
+        ).properties(height=300, width=500)).interactive()
+    print("Align vs Year chart created, saving as html.")
+
+    return align_vs_year.save(output_folder + "/" + file_name + ".html", scale_factor = 2)
+
+def generate_align_vs_appearances(data_frame, output_folder, file_name):
+    """
+    Generates a chart of the relation between align and appearances in dataset.
+    Also saves resulting image as file in given output folder.
+    Parameters:
+    -----------
+    data_frame : pandas.DataFrame
+        input path to be verified
+    output_folder : str
+        output folder path to save the chart
+    file_name : str
+        file name for generated chart image
+        
+    Returns:
+    -----------
+    object
+        saved .png file
+    """
+    align_vs_appearances = (
+        alt.Chart(
+            data_frame.dropna(), title="Character Appearances by Alignment"
+            ).mark_boxplot().encode(
+                alt.X('appearances:Q', title = 'Appearances'),
+                y = alt.Y('align:O', title = "Alignment"),
+                color = alt.Color("align", title = "Alignment"),
+                size='count()'
+                ).properties(height=300, width=500)).interactive()
+    print("Align vs Appearances chart created, saving as html.")
+
+    return align_vs_appearances.save(output_folder +"/" + file_name +".html", scale_factor = 2)
+
+def main(input_file_path, output_folder_path):
     print(input_file_path)
     data_frame = read_input_file(input_file_path)
-    print("generating")
-    generate_dataset_overview(data_frame, output_folder_path, "Table_01")
-    generate_feature_overview(data_frame, output_folder_path, "Table_02")
-    print("done")
+    generate_dataset_overview(data_frame, output_folder_path, "Dataset Overview")
+    generate_feature_overview(data_frame, output_folder_path, "Feature Overview")
+    generate_align_vs_features(data_frame, output_folder_path, "Alignment vs Features")
+    generate_align_vs_year(data_frame, output_folder_path, "Alignment over Time")
+    generate_align_vs_appearances(data_frame, output_folder_path, "Character Appearances by Alignment")
+    print("Succesfull!")
 
 
-if __name__ == "__main__":
-    print("101")
-    
+if __name__ == "__main__":    
+    print("Let there be light!")
     input_file = args["--input"]
     output_dir = args["--output"]
     verbose = args["-v"]
-    print("102")
-    maint(input_file, output_dir)
+    main(input_file, output_dir)
