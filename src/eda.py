@@ -40,9 +40,9 @@ def read_input_file(input_file_path):
 
     try:
         data_frame = pd.read_csv(input_file_path, index_col=0)
-        print('Path is valid.')
+        if verbose: print('Input filename path is valid.')
     except:
-        print(input_file_path + 'Path is not valid. Please check!')
+        print(input_file_path + 'Input filename path is not valid. Please check!')
         sys.exit()
 
     combined_columns = ['name', 'id', 'align', 'eye', 'hair', 'sex', 'gsm','appearances', 'first_appearance', 'year', 'publisher']
@@ -51,7 +51,7 @@ def read_input_file(input_file_path):
         print(input_file_path + " should contain these columns: " + str(combined_columns))
         sys.exit()
 
-    print('Creating and returning data frame.')
+    if verbose: print('Creating and returning EDA data frame.')
     return data_frame
 
 def generate_dataset_overview(data_frame, output_folder, file_name):
@@ -81,7 +81,7 @@ def generate_dataset_overview(data_frame, output_folder, file_name):
     overview_frame = pd.DataFrame(data_overview)
     fig_1, ax_1 = render_table(overview_frame, header_columns=0, col_width=5)
     fig_1.savefig(output_folder + "/" + file_name)
-    print("Saving overview table.")
+    if verbose: print("Saving EDA dataset overview table.")
 
     return overview_frame
 
@@ -116,7 +116,7 @@ def generate_feature_overview(data_frame, output_folder, file_name):
 
     fig_2, ax_2 = render_table(features_frame, header_columns=0, col_width=3)
     fig_2.savefig(output_folder +"/"+ file_name)
-    print("Saving features overview table.")
+    if verbose: print("Saving features analysis overview table.")
 
     return features_frame
 
@@ -146,7 +146,7 @@ def generate_align_vs_features(data_frame, output_folder, file_name):
         color = alt.Color("align", legend=alt.Legend(title="Alignment"))
         ).properties(height=300, width=200).repeat(repeat=features, columns=3))
 
-    print("Align vs Features chart created, saving as html.")
+    if verbose: print("Align vs Features chart created, saving as html.")
     return align_vs_features.save(output_folder + "/" + file_name + ".html", scale_factor = 2)
 
 def generate_align_vs_year(data_frame, output_folder, file_name):
@@ -173,7 +173,7 @@ def generate_align_vs_year(data_frame, output_folder, file_name):
         color = alt.Color("align", title="Alignment"),
         tooltip = 'year'
         ).properties(height=300, width=500)).interactive()
-    print("Align vs Year chart created, saving as html.")
+    if verbose: print("Align vs Year chart created, saving as html.")
 
     return align_vs_year.save(output_folder + "/" + file_name + ".html", scale_factor = 2)
 
@@ -204,23 +204,23 @@ def generate_align_vs_appearances(data_frame, output_folder, file_name):
                 color = alt.Color("align", title = "Alignment"),
                 size='count()'
                 ).properties(height=300, width=500)).interactive()
-    print("Align vs Appearances chart created, saving as html.")
+    if verbose: print("Align vs Appearances chart created, saving as html.")
 
     return align_vs_appearances.save(output_folder +"/" + file_name +".html", scale_factor = 2)
 
 def main(input_file_path, output_folder_path):
-    print(input_file_path)
+    print("##### EDA: Generating EDA Data!")
+    if verbose: print(f"Running eda script with arguments: \n {args}")
     data_frame = read_input_file(input_file_path)
     generate_dataset_overview(data_frame, output_folder_path, "Dataset Overview")
     generate_feature_overview(data_frame, output_folder_path, "Feature Overview")
     generate_align_vs_features(data_frame, output_folder_path, "Alignment vs Features")
     generate_align_vs_year(data_frame, output_folder_path, "Alignment over Time")
     generate_align_vs_appearances(data_frame, output_folder_path, "Character Appearances by Alignment")
-    print("Succesfull!")
+    print("##### EDA: EDA Data Generation Completed!")
 
 
 if __name__ == "__main__":    
-    print("Let there be light!")
     input_file = args["--input"]
     output_dir = args["--output"]
     verbose = args["-v"]
