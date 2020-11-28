@@ -41,7 +41,7 @@ def get_datasets():
         github_api_url = "https://api.github.com/repos/"
         repo_url = args["--input"].split(os.path.sep)
         # These magic numbers parse out the unnecessary github url branch info
-        github_api_url = github_api_url + \
+        github_api_url = github_api_url + os.path.sep
             (os.path.sep).join(repo_url[3:5] + ["contents"] + repo_url[7:])
 
         try:
