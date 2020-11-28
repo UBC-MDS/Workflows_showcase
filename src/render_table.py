@@ -1,3 +1,13 @@
+"""
+Author: Zeliha Ural Merpez
+
+Created Date: Nov 25, 2020
+
+Purpose: To create exploratory data frame to help readers understand the data; 
+         To print the given dataframe in a nice format, that is easy to save
+
+"""
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,6 +16,7 @@ def render_table(data, col_width=3.0, row_height=0.625, font_size=14,
                      header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
                      bbox=[0, 0, 1, 1], header_columns=0,
                      ax=None, **kwargs):
+    
     """[Taken from ref: https://stackoverflow.com/questions/19726663/how-to-save-the-pandas-dataframe-series-data-as-a-figure]
        [Prints given dataframe in a nice format, that is easy to save]
     Parameters
