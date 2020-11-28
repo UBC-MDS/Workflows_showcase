@@ -5,7 +5,7 @@ Date: Nov 25, 2020
 
 This script reads combined data and generates images and tables to be used in further analysis.
 
-Usage: eda.py -i=<input> -o=<output> [-v]
+Usage: generate_eda.py -i=<input> -o=<output> [-v]
 
 Options:
 -i <input>, --input <input>     Local raw data csv filename and path
@@ -13,21 +13,37 @@ Options:
 [-v]                            Report verbose output of dataset retrieval process
 """
 
-# example to run: python src/eda.py -i "data/processed/clean_characters.csv" -o "img"
+# example to run: python src/generate_eda.py -i "data/processed/clean_characters.csv" -o "results"
 
 import sys
 import os
 import numpy as np
 import pandas as pd
 import altair as alt
-import matplotlib.pyplot as plt
+import pickle
 from docopt import docopt
 from render_table import render_table
 args = docopt(__doc__)
 
+def validate_inputs(input_file_path, output_dir_path):
+    if not os.path.isfile(input_file_path):
+        print(f"Cannot locate input file: {input_file_path}")
+        sys.exit()
+
+    if not os.path.exists(output_dir_path):
+        os.makedirs(output_dir_path)
+    if not os.path.exists(output_dir_path + "/figures"):
+        os.makedirs(output_dir_path + "/figures")
+    if not os.path.exists(output_dir_path + "/tables"):
+        os.makedirs(output_dir_path + "/tables")
+    assert os.path.exists(output_dir_path), f"Invalid output path: {output_dir_path}"
+    assert os.path.exists(output_dir_path + "/figures"), f"Invalid output path: {output_dir_path}/figures"
+    assert os.path.exists(output_dir_path + "/tables"), f"Invalid output path: {output_dir_path}/tables"
+
+
 def read_input_file(input_file_path):
     """
-    Validates input file path.
+    Validates input file path and reads cleaned data.
     Parameters:
     -----------
     input_file_path : str
@@ -38,10 +54,6 @@ def read_input_file(input_file_path):
     pandas.DataFrame
         if path is valid and verified
     """
-    if not os.path.isfile(input_file_path):
-        print("Input file does not exist.")
-        sys.exit()
-
     try:
         data_frame = pd.read_csv(input_file_path, index_col=0)
         if verbose: print('Input filename path is valid.')
@@ -49,6 +61,7 @@ def read_input_file(input_file_path):
         print(input_file_path + 'Input filename path is not valid. Please check!')
         sys.exit()
 
+    # TODO possibly move this to a config or test script to remove magic values
     combined_columns = ['name', 'id', 'align', 'eye', 'hair', 'sex', 'gsm','appearances', 'first_appearance', 'year', 'publisher']
 
     if not all([item in data_frame.columns for item in combined_columns]):
@@ -57,6 +70,7 @@ def read_input_file(input_file_path):
 
     if verbose: print('Creating and returning EDA data frame.')
     return data_frame
+
 
 def generate_dataset_overview(data_frame, output_folder, file_name):
     """
@@ -73,8 +87,7 @@ def generate_dataset_overview(data_frame, output_folder, file_name):
         
     Returns:
     -----------
-    str
-        saved file path
+    None
     """
     data_overview = [
             {"Dataset": "Number of features", "Value": len(data_frame.columns)},
@@ -83,11 +96,15 @@ def generate_dataset_overview(data_frame, output_folder, file_name):
             {"Dataset": "Percentage of Missing cells", "Value": round((data_frame.isnull()).sum().sum()/data_frame.size*100, 2)}
         ]
     overview_frame = pd.DataFrame(data_overview)
-    fig_1, ax_1 = render_table(overview_frame, header_columns=0, col_width=5)
-    fig_1.savefig(output_folder + "/" + file_name)
-    if verbose: print("Saving EDA dataset overview table.")
 
-    return overview_frame
+    overview_frame.to_pickle(output_folder + "/tables/" + file_name + ".pkl")
+    fig_1, ax_1 = render_table(overview_frame, header_columns=0, col_width=5)
+    fig_1.savefig(output_folder + "/figures/" + file_name)
+
+    if verbose: print("Saved EDA dataset_overview as " + 
+                      output_folder + "/tables/" + file_name + ".pkl and " +
+                      output_folder + "/figures/" + file_name + ".png")
+
 
 def generate_feature_overview(data_frame, output_folder, file_name):
     """
@@ -104,8 +121,7 @@ def generate_feature_overview(data_frame, output_folder, file_name):
         
     Returns:
     -----------
-    object
-        saved .png file
+    None
     """
     distinct_class = dict()
     nonnull_count = dict()
@@ -118,11 +134,14 @@ def generate_feature_overview(data_frame, output_folder, file_name):
     features_frame.columns=["Features","Dictinct Class", "Non-Null Count"]
     features_frame["Missing Percentage"]=round((len(data_frame) - features_frame["Non-Null Count"])/len(data_frame)*100,2)
 
+    features_frame.to_pickle(output_folder + "/tables/" + file_name + ".pkl")
     fig_2, ax_2 = render_table(features_frame, header_columns=0, col_width=3)
-    fig_2.savefig(output_folder +"/"+ file_name)
-    if verbose: print("Saving features analysis overview table.")
+    fig_2.savefig(output_folder +"/figures/"+ file_name)
 
-    return features_frame
+    if verbose: print("Saved EDA feature_overview as " + 
+                      output_folder + "/tables/" + file_name + ".pkl and " +
+                      output_folder + "/figures/" + file_name + ".png")
+
 
 def generate_align_vs_features(data_frame, output_folder, file_name):
     """
@@ -139,8 +158,7 @@ def generate_align_vs_features(data_frame, output_folder, file_name):
         
     Returns:
     -----------
-    object
-        saved .png file
+    None
     """
     features = ['id', 'eye', 'hair', 'sex', 'gsm', 'publisher']
     align_vs_features = (alt.Chart(data_frame).mark_circle().encode(
@@ -150,8 +168,13 @@ def generate_align_vs_features(data_frame, output_folder, file_name):
         color = alt.Color("align", legend=alt.Legend(title="Alignment"))
         ).properties(height=300, width=200).repeat(repeat=features, columns=3))
 
-    if verbose: print("Align vs Features chart created, saving as html.")
-    return align_vs_features.save(output_folder + "/" + file_name + ".html", scale_factor = 2)
+    align_vs_features.save(output_folder +"/figures/" + file_name + '.png')
+    if verbose: print("Alignment vs features chart created, saved to " + 
+                      output_folder + 
+                      "/figures/" + 
+                      file_name + 
+                      '.png')
+
 
 def generate_align_vs_year(data_frame, output_folder, file_name):
     """
@@ -168,8 +191,7 @@ def generate_align_vs_year(data_frame, output_folder, file_name):
         
     Returns:
     -----------
-    object
-        saved .png file
+    None
     """
     align_vs_year = (alt.Chart(data_frame, title = "Alignment over Time").mark_line().encode(
         alt.X('year:T', title = 'Year(1935-2013)'),
@@ -177,9 +199,14 @@ def generate_align_vs_year(data_frame, output_folder, file_name):
         color = alt.Color("align", title="Alignment"),
         tooltip = 'year'
         ).properties(height=300, width=500)).interactive()
-    if verbose: print("Align vs Year chart created, saving as html.")
 
-    return align_vs_year.save(output_folder + "/" + file_name + ".html", scale_factor = 2)
+    align_vs_year.save(output_folder +"/figures/" + file_name + '.png')
+    if verbose: print("Alignment vs year chart created, saved to " + 
+                      output_folder + 
+                      "/figures/" + 
+                      file_name + 
+                      '.png')
+
 
 def generate_align_vs_appearances(data_frame, output_folder, file_name):
     """
@@ -196,8 +223,7 @@ def generate_align_vs_appearances(data_frame, output_folder, file_name):
         
     Returns:
     -----------
-    object
-        saved .png file
+    None
     """
     align_vs_appearances = (
         alt.Chart(
@@ -208,20 +234,26 @@ def generate_align_vs_appearances(data_frame, output_folder, file_name):
                 color = alt.Color("align", title = "Alignment"),
                 size='count()'
                 ).properties(height=300, width=500)).interactive()
-    if verbose: print("Align vs Appearances chart created, saving as html.")
 
-    return align_vs_appearances.save(output_folder +"/" + file_name +".html", scale_factor = 2)
+    align_vs_appearances.save(output_folder +"/figures/" + file_name + '.png')
+    if verbose: print("Alignment vs appearances chart created, saved to " + 
+                      output_folder + 
+                      "/figures/" + 
+                      file_name + 
+                      '.png')
+
 
 def main(input_file_path, output_folder_path):
-    print("##### EDA: Generating EDA Data!")
+    print("\n\n##### EDA: Generating EDA Data!")
     if verbose: print(f"Running eda script with arguments: \n {args}")
+    validate_inputs(input_file, output_dir)
     data_frame = read_input_file(input_file_path)
-    generate_dataset_overview(data_frame, output_folder_path, "Dataset Overview")
-    generate_feature_overview(data_frame, output_folder_path, "Feature Overview")
-    generate_align_vs_features(data_frame, output_folder_path, "Alignment vs Features")
-    generate_align_vs_year(data_frame, output_folder_path, "Alignment over Time")
-    generate_align_vs_appearances(data_frame, output_folder_path, "Character Appearances by Alignment")
-    print("##### EDA: EDA Data Generation Completed!")
+    generate_dataset_overview(data_frame, output_folder_path, "dataset_overview")
+    generate_feature_overview(data_frame, output_folder_path, "feature_overview")
+    generate_align_vs_features(data_frame, output_folder_path, "alignment_vs_features")
+    generate_align_vs_year(data_frame, output_folder_path, "alignment_over_time")
+    generate_align_vs_appearances(data_frame, output_folder_path, "appearances_by_alignment")
+    print("\n##### EDA: EDA Data Generation Completed!")
 
 
 if __name__ == "__main__":    

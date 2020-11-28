@@ -23,10 +23,9 @@ args = docopt(__doc__)
 
 
 def preprocess_data():
-    # Setup script argument parsing
-    input_dir = args["--input"]
-    output_filename = args["--output"]
-    verbose = args["-v"]
+    # Starting dataset preprocessing
+    print("\n\n##### preprocess_data: Preprocessing datasets")
+    if verbose: print(f"Running preprocess_data with arguments: \n {args}")
 
     assert os.path.exists(input_dir), "Invalid input directory path provided"
     if not os.path.exists(os.path.dirname(output_filename)):
@@ -35,10 +34,6 @@ def preprocess_data():
 
     output_file_slug = output_filename.split(".")[0]
     output_file_ext = output_filename.split(".")[-1]
-
-    # Starting dataset retrieval
-    print("##### preprocess_data: Preprocessing datasets")
-    if verbose: print(f"Running preprocess_data with arguments: \n {args}")
 
     raw_csv_files = glob.glob(f"{input_dir}/*.csv")
 
@@ -110,8 +105,11 @@ def preprocess_data():
     if verbose:
         print(f"Wrote test data output file: {output_file_slug}_test.{output_file_ext}")
 
-    print("##### preprocess_data: Finished preprocessing")
+    print("\n##### preprocess_data: Finished preprocessing")
 
 
 if __name__ == "__main__":
+    input_dir = args["--input"]
+    output_filename = args["--output"]
+    verbose = args["-v"]
     preprocess_data()
