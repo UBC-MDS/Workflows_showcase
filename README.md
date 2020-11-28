@@ -63,8 +63,6 @@ python src/analysis.py -i data/processed/clean_characters_train.csv -o results -
 ![Flow Chart](img/flow_chart00.png)
 
 
-An alternative way to reproduce the analysis is by running the scripts by `make all`.
-
 ### Dependencies
 
 To reproduce, please see dependencies in [environment file](https://github.com/UBC-MDS/Workflows_showcase/blob/main/env/env.yaml).
