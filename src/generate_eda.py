@@ -26,6 +26,20 @@ from render_table import render_table
 args = docopt(__doc__)
 
 def validate_inputs(input_file_path, output_dir_path):
+    """
+    Validates input argument paths.
+    Parameters:
+    -----------
+    input_file_path : str
+        input path to be verified
+
+    output_file_path : str
+        output path to be verified
+        
+    Returns:
+    -----------
+    None
+    """
     if not os.path.isfile(input_file_path):
         print(f"Cannot locate input file: {input_file_path}")
         sys.exit()
@@ -43,7 +57,7 @@ def validate_inputs(input_file_path, output_dir_path):
 
 def read_input_file(input_file_path):
     """
-    Validates input file path and reads cleaned data.
+    Reads input file path and reads cleaned data.
     Parameters:
     -----------
     input_file_path : str
