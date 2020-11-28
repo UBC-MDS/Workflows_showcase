@@ -20,19 +20,15 @@ args = docopt(__doc__)
 
 
 def get_datasets():
-    input = args["--input"]
-    output_path = args["--output"]
-    verbose = args["-v"]
-
+    # Starting dataset retrieval
+    print("\n\n##### get_datasets: Retrieving datasets")
+    if verbose: print(f"Running get_dataset with arguments: \n {args}")
+    
     assert input, "Empty input argument provided"
 
     if not os.path.exists(output_path):
         os.makedirs(output_path)
     assert os.path.exists(output_path), "Invalid output path provided"
-
-    # Starting dataset retrieval
-    print("##### get_datasets: Retrieving datasets")
-    if verbose: print(f"Running get_dataset with arguments: \n {args}")
 
     download_urls = []
     if args['-g'] is True: 
@@ -73,8 +69,11 @@ def get_datasets():
         except ConnectionError:
             print(f"Unable to retrieve: {file_url}, continuing")
 
-    print("##### get_datasets: Finished retrieval")
+    print("\n##### get_datasets: Finished retrieval")
 
 
 if __name__ == "__main__":
+    input = args["--input"]
+    output_path = args["--output"]
+    verbose = args["-v"]
     get_datasets()
