@@ -1,4 +1,8 @@
 """
+Author: Craig McLaughlin
+
+Date: Nov 25, 2020
+
 Retrieve datasets from a URL, file of URLs, or GitHub directory URL
 
 Usage: get_datasets.py -i=<input> -o=<output> [-u] [-f] [-g] [-v]
