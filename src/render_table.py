@@ -3,8 +3,7 @@ Author: Zeliha Ural Merpez
 
 Created Date: Nov 25, 2020
 
-Purpose: To create exploratory data frame to help readers understand the data; 
-         To print the given dataframe in a nice format, that is easy to save
+Purpose: To print the given dataframe in a nice format, that is easy to save
 
 """
 

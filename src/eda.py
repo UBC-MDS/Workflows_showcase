@@ -1,4 +1,8 @@
 """
+Author: Craig McLaughlin
+
+Date: Nov 25, 2020
+
 This script reads combined data and generates images and tables to be used in further analysis.
 
 Usage: eda.py -i=<input> -o=<output> [-v]
