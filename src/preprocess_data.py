@@ -1,4 +1,8 @@
 """
+Author: Craig McLaughlin
+
+Date: Nov 25, 2020
+
 Preprocess raw comic character datasets for analysis
 
 Usage: preprocess_data.py -i=<input> -o=<output> [-v]
