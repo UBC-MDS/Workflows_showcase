@@ -27,7 +27,7 @@ def get_datasets():
     # Starting dataset retrieval
     print("\n\n##### get_datasets: Retrieving datasets")
     if verbose: print(f"Running get_dataset with arguments: \n {args}")
-    
+
     assert input, "Empty input argument provided"
 
     if not os.path.exists(output_path):
@@ -35,14 +35,14 @@ def get_datasets():
     assert os.path.exists(output_path), "Invalid output path provided"
 
     download_urls = []
-    if args['-g'] is True: 
-        # If this is a github repo, construct GET api request to 
+    if args['-g'] is True:
+        # If this is a github repo, construct GET api request to
         # retrieve all repo directory datafiles
         github_api_url = "https://api.github.com/repos/"
-        repo_url = args["--input"].split(os.path.sep)
+        repo_url = args["--input"].split("/")
         # These magic numbers parse out the unnecessary github url branch info
-        github_api_url = github_api_url + os.path.sep
-            (os.path.sep).join(repo_url[3:5] + ["contents"] + repo_url[7:])
+        github_api_url = github_api_url + \
+            ("/").join(repo_url[3:5] + ["contents"] + repo_url[7:])
 
         try:
             if verbose: print(f"Attempting to connect to: {github_api_url}")
@@ -50,7 +50,7 @@ def get_datasets():
         except ConnectionError:
             print(f"Failed to connect to: {github_api_url}. \nExiting")
             sys.exit(os.EX_NOHOST)
-      
+
         if verbose: print("Connection Success!")
         git_files = json.loads(response.decode('utf-8'))
         for file in git_files:

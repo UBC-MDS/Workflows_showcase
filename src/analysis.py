@@ -62,38 +62,67 @@ from pylab import savefig
 from render_table import render_table
 args = docopt(__doc__)
 
-
-def read_input_file(input_file_path):
+def validate_inputs(input_file_path, output_dir_path):
     """
-    Validates input file path.
+    Validates input argument paths.
     Parameters:
     -----------
     input_file_path : str
         input path to be verified
 
+    output_file_path : str
+        output path to be verified
+        
+    Returns:
+    -----------
+    None
+    """
+    if not os.path.isfile(input_file_path):
+        print(f"Cannot locate input file: {input_file_path}")
+        sys.exit()
+
+    if not os.path.exists(output_dir_path):
+        os.makedirs(output_dir_path)
+    if not os.path.exists(output_dir_path + "/figures"):
+        os.makedirs(output_dir_path + "/figures")
+    if not os.path.exists(output_dir_path + "/tables"):
+        os.makedirs(output_dir_path + "/tables")
+    if not os.path.exists(output_dir_path + "/models"):
+        os.makedirs(output_dir_path + "/models")
+    assert os.path.exists(output_dir_path), f"Invalid output path: {output_dir_path}"
+    assert os.path.exists(output_dir_path + "/figures"), f"Invalid output path: {output_dir_path}/figures"
+    assert os.path.exists(output_dir_path + "/tables"), f"Invalid output path: {output_dir_path}/tables"
+    assert os.path.exists(output_dir_path + "/tables"), f"Invalid output path: {output_dir_path}/tables"
+
+
+def read_input_file(input_file_path):
+    """
+    Reads input file path and reads cleaned data.
+    Parameters:
+    -----------
+    input_file_path : str
+        input path to be verified
+        
     Returns:
     -----------
     pandas.DataFrame
         if path is valid and verified
     """
-    if not os.path.isfile(input_file_path):
-        print("Input file does not exist.")
-        sys.exit()
-
     try:
-        data_frame = pd.read_csv(input_file_path, index_col=0, parse_dates = ['first_appearance'])
-        print('Path is valid')
+        data_frame = pd.read_csv(input_file_path, index_col=0)
+        if verbose: print('Input filename path is valid.')
     except:
-        print(input_file_path + 'Path is not valid. Please check ')
+        print(input_file_path + 'Input filename path is not valid. Please check!')
         sys.exit()
 
+    # TODO possibly move this to a config or test script to remove magic values
     combined_columns = ['name', 'id', 'align', 'eye', 'hair', 'sex', 'gsm','appearances', 'first_appearance', 'year', 'publisher']
 
     if not all([item in data_frame.columns for item in combined_columns]):
         print(input_file_path + " should contain these columns: " + str(combined_columns))
         sys.exit()
 
-    print('Returning data frame')
+    if verbose: print('Creating and returning EDA data frame.')
     return data_frame
 
 #This function is adapted from Varada's lecture code in DSCI571
@@ -127,7 +156,7 @@ def store_cross_val_results(model, scores, results):
 
 
 
-def train_models(train_df, models, param_grid=None):
+def train_models(train_df, models, param_grid=None, output_dir=""):
     """
     Processes the data, trains the model, and returns a dataframe showing the results
 
@@ -186,7 +215,7 @@ def train_models(train_df, models, param_grid=None):
         ("drop", drop_features),
         (numeric_transformer, numeric_features),
         (categorical_transformer, categorical_features),
-         (ordinal_transformer, ordinal_features)
+        (ordinal_transformer, ordinal_features)
     )
 
     results_df = {}
@@ -200,8 +229,16 @@ def train_models(train_df, models, param_grid=None):
                     ]
             )
 
-            random_search = RandomizedSearchCV(random_forest_pipeline, param_distributions=param_grid, cv=5, n_jobs=-1, n_iter=20, return_train_score=True)
+            random_search = RandomizedSearchCV(random_forest_pipeline, 
+                                               param_distributions=param_grid, 
+                                               cv=5, 
+                                               n_jobs=-1, 
+                                               n_iter=20, 
+                                               return_train_score=True)
             random_search.fit(X_train, y_train)
+            if output_dir:
+                pickle.dump(random_search.best_estimator_, 
+                open(output_dir + "\models\optimized_model.pkl", 'wb'))
 
         results = pd.DataFrame(random_search.cv_results_).set_index("rank_test_score").sort_index()
         results.reset_index(inplace=True)
@@ -228,17 +265,18 @@ def train_models(train_df, models, param_grid=None):
 def save_img(data_frame, output_folder, file_name):
     data_frame.to_pickle(output_folder + "/tables/" + file_name + ".pkl")
     fig_1, ax_1 = render_table(data_frame, header_columns=0, col_width=5)
-    fig_1.savefig(output_folder + "/" + file_name)
+    fig_1.savefig(output_folder + "/figures/" + file_name)
 
 def save_img_large(data_frame, output_folder, file_name):
     data_frame.to_pickle(output_folder + "/tables/" + file_name + ".pkl")
     fig_1, ax_1 = render_table(data_frame, header_columns=0, col_width=8)
-    fig_1.savefig(output_folder + "/" + file_name)
+    fig_1.savefig(output_folder + "/figures/" + file_name)
 
 def main(input_file_path, output_folder_path):
-    if verbose: print(input_file_path)
+    print("\n\n##### Analysis: Training Models!")
+    if verbose: print(f"Running analysis script with arguments: \n {args}")
+    validate_inputs(input_file, output_dir)
     data_frame = read_input_file(input_file_path)
-    if verbose: print("Generating")
 
     #train_data
     if verbose: print("Generating training data")
@@ -256,7 +294,7 @@ def main(input_file_path, output_folder_path):
     }
     model_df = train_models(train_df, models)
     if verbose: print("Trained model(s)")
-    save_img(model_df, output_folder_path, "Table_03")
+    save_img(model_df, output_folder_path, "model_comparison")
 
     #Performing hyperparameter optimization on best one
     if verbose: print("Performing hyperparameter optimization on best model")
@@ -264,10 +302,10 @@ def main(input_file_path, output_folder_path):
         "Random Forest Classifier": RandomForestClassifier(),
     }
     param_grid = {"Random Forest Classifier__max_depth": 10.0 ** np.arange(-10, 10)}
-    model_df = train_models(train_df, models, param_grid)
+    model_df = train_models(train_df, models, param_grid, output_dir)
     if verbose: print("Trained model(s)")
-    save_img_large(model_df, output_folder_path, "Table_04")
-    if verbose: print("Done")
+    save_img_large(model_df, output_folder_path, "optimized_model")
+    print("\n\n##### Analysis: Training Models Complete!")
 
 
 if __name__ == "__main__":
