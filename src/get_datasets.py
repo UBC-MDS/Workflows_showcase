@@ -39,10 +39,10 @@ def get_datasets():
         # If this is a github repo, construct GET api request to 
         # retrieve all repo directory datafiles
         github_api_url = "https://api.github.com/repos/"
-        repo_url = args["--input"].split(os.path.sep)
+        repo_url = args["--input"].split("/")
         # These magic numbers parse out the unnecessary github url branch info
         github_api_url = github_api_url + \
-            (os.path.sep).join(repo_url[3:5] + ["contents"] + repo_url[7:])
+            ("/").join(repo_url[3:5] + ["contents"] + repo_url[7:])
 
         try:
             if verbose: print(f"Attempting to connect to: {github_api_url}")
