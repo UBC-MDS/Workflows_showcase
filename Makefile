@@ -57,7 +57,7 @@ report/summary_report.md : \
     results/tables/optimized_model.pkl \
     results/tables/model_comparison.pkl \
 	results/models/optimized_model.pkl
-	    jupyter nbconvert --to html report/summary_report.ipynb
+	    jupyter nbconvert --to html report/summary_report.ipynb --no-input
 
 clean :
 	rm -f data/raw/*

@@ -1,5 +1,5 @@
 """
-Author: Craig McLaughlin
+Author: Zeliha Ural Merpez
 
 Date: Nov 25, 2020
 
