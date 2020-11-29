@@ -76,6 +76,10 @@ To reproduce, please see dependencies in [environment file](https://github.com/U
 
 1. [Comic Book Characters](https://github.com/rudeboybert/fivethirtyeight/tree/master/data-raw/comic-characters) 
 
+2. [Sample Group Project](https://github.com/ttimbers/breast_cancer_predictor)
+
+2. [Render Table Sample](https://stackoverflow.com/questions/19726663/how-to-save-the-pandas-dataframe-series-data-as-a-figure)
+
 ```python
 
 ```
