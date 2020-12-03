@@ -1,17 +1,26 @@
+# Makefile
+# Craig McLaughlin, Dec 2, 2020
+
+# This makefile script executes the retrieval, cleaning, exploratory analysis,
+# feature transformation, machine learning training, machine learning 
+# analysis/prediction, and final reporting analysis of a dataset of DC and 
+# Marvel comic book characters and their traits. There are no input arguments.
+
+# example usage:
+# make clean
+# make all
+
 all : report/summary_report.md
 
-# Retrieve datasets from repo
+# Retrieve datasets from web repo
 data/raw/dc-wikia-data.csv data/raw/marvel-wikia-data.csv : \
     src/get_datasets.py
 	    python src/get_datasets.py \
 	    -i https://github.com/rudeboybert/fivethirtyeight/tree/master/data-raw/comic-characters \
 	    -o data/raw -g -v
 
-# Preprocess and clean the data
-data/processed/clean_characters.csv \
-data/processed/clean_characters_train.csv \
-data/processed/clean_characters_test.csv \
-data/processed/clean_characters_deploy.csv : \
+# Preprocess and clean the csv files into a single output csv
+data/processed/clean_characters.csv : \
     data/raw/dc-wikia-data.csv \
     data/raw/marvel-wikia-data.csv \
     src/preprocess_data.py
@@ -31,17 +40,26 @@ results/tables/feature_overview.pkl : \
 	    -i data/processed/clean_characters.csv \
 	    -o results -v
 
-# Modelling
+# Perform feature engineering on the clean data
+data/processed/character_features_train.csv \
+data/processed/character_features_test.csv \
+data/processed/character_features_deploy.csv : \
+    data/processed/clean_characters.csv \
+    src/feature_engineer.py
+		python src/feature_engineer.py \
+	    -i data/processed/clean_characters.csv \
+	    -o data/processed/character_features.csv -v
+
+# Machine learning modelling
 results/figures/optimized_model.png \
 results/figures/model_comparison.png \
 results/tables/optimized_model.pkl \
 results/tables/model_comparison.pkl \
 results/models/optimized_model.pkl : \
-    data/processed/clean_characters_train.csv \
-	data/processed/clean_characters_test.csv \
+    data/processed/character_features_train.csv \
 	src/analysis.py
 	    python src/analysis.py \
-		    -i data/processed/clean_characters_train.csv \
+		    -i data/processed/character_features_train.csv \
 			-o results -v
 
 
@@ -61,10 +79,10 @@ report/summary_report.md : \
 
 clean :
 	rm -f data/raw/*
-	rm -f data/processed/*
-	rm -f results/figures/*
-	rm -f results/tables/*
-	rm -f results/models/*
+	rm -rf data/processed
+	rm -rf results/figures
+	rm -rf results/tables
+	rm -rf results/models
 	rm -f report/eda_profile_report.html
 	rm -f report/summary_report.html
 	rm -rf report/summary_report_files/

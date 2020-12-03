@@ -16,7 +16,6 @@ import os
 import glob
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
 from datetime import datetime
 from docopt import docopt
 args = docopt(__doc__)
@@ -31,9 +30,6 @@ def preprocess_data():
     if not os.path.exists(os.path.dirname(output_filename)):
         os.makedirs(os.path.dirname(output_filename))
     assert os.path.exists(os.path.dirname(output_filename)), "Invalid output path provided"
-
-    output_file_slug = output_filename.split(".")[0]
-    output_file_ext = output_filename.split(".")[-1]
 
     raw_csv_files = glob.glob(f"{input_dir}/*.csv")
 
@@ -68,9 +64,9 @@ def preprocess_data():
 
     characters_data = pd.concat(publisher_dfs, ignore_index=True)
 
-    # There is some weird comic book multiverse stuff going on with this... We
-    # can't remove the bracket aliases without creating duplicate entries
-    #characters_data['name'] = characters_data['name'].str.split('(').str[0]
+    character_name = characters_data['name'].str.split('(').str[0].str.strip()
+    characters_data['first_name'] = character_name.str.split(" ").str[0]
+    characters_data['last_name'] = character_name.str.split(" ", n=1).str[1]
     characters_data['align'] = characters_data['align'].replace(regex ="Reformed", value = "Good")
     characters_data['align'] = (characters_data['align'].str.split(' ').str[0]).astype("category")
     characters_data['eye'] = (characters_data['eye'].str.split(' ').str[0]).astype("category")
@@ -87,23 +83,6 @@ def preprocess_data():
     characters_data.to_csv(output_filename)
     if verbose: print("\nOutput data summary:")
     if verbose: print(f"{characters_data.info()}")
-
-    # Creating deployment data file from rows missing target values")
-    deploy_df = characters_data[characters_data['align'].isnull()]
-    deploy_df.to_csv(output_file_slug + "_deploy." + output_file_ext)
-    characters_data = characters_data[characters_data['align'].notna()]
-
-    # Split train and test data
-    train_df, test_df = train_test_split(characters_data, test_size=0.2, random_state=123)
-    train_df.to_csv(output_file_slug + "_train." + output_file_ext)
-    test_df.to_csv(output_file_slug + "_test." + output_file_ext)
-
-    if verbose:
-        print(f"Wrote deployment data output file: {output_file_slug}_deploy.{output_file_ext}")
-    if verbose:
-        print(f"Wrote train data output file: {output_file_slug}_train.{output_file_ext}")
-    if verbose:
-        print(f"Wrote test data output file: {output_file_slug}_test.{output_file_ext}")
 
     print("\n##### preprocess_data: Finished preprocessing")
 
