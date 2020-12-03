@@ -238,7 +238,7 @@ def train_models(train_df, models, param_grid=None, output_dir=""):
             random_search.fit(X_train, y_train)
             if output_dir:
                 pickle.dump(random_search.best_estimator_, 
-                open(output_dir + "\models\optimized_model.pkl", 'wb'))
+                open(output_dir + "/models/optimized_model.pkl", 'wb'))
 
         results = pd.DataFrame(random_search.cv_results_).set_index("rank_test_score").sort_index()
         results.reset_index(inplace=True)
