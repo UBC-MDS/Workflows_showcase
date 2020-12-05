@@ -122,7 +122,7 @@ def read_input_file(input_file_path):
         print(input_file_path + " should contain these columns: " + str(combined_columns))
         sys.exit()
 
-    if verbose: print('Creating and returning EDA data frame.')
+    if verbose: print('Creating and returning analysis data frame.')
     return data_frame
 
 #This function is adapted from Varada's lecture code in DSCI571
