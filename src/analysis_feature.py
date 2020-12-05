@@ -32,6 +32,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
+from sklearn.tree import export_graphviz
+from subprocess import call
 
 args = docopt(__doc__)
 
@@ -163,9 +165,9 @@ def fit_best_model(data_frame, best_depth):
     if verbose: print("Feature importances extracted from best model as a data frame.")
     return result_df
 
-def seperate_feature_coefficients(data_frame, output_folder, file_name):
+def separate_feature_coefficients(data_frame, output_folder, file_name):
     """
-    Seperates feature coefficients of the optimized model results.
+    Separates feature coefficients of the optimized model results.
     Also saves resulting table as file in given output folder.
     Parameters:
     -----------
@@ -183,14 +185,14 @@ def seperate_feature_coefficients(data_frame, output_folder, file_name):
     result_df = data_frame
     result_df[['Feature','Sub-feature']] = result_df.features.str.split('_', expand=True) 
     result_df = result_df[['Feature', 'Sub-feature', 'Importance_coefficient']]
-    #seperate each feature
-    seperated_dict = dict(tuple(result_df.groupby('Feature')))
-    for key in seperated_dict.keys():
-        seperated_dict[key].to_pickle(output_folder + "/tables/" + file_name + "_of_"+ key + ".pkl")
-        fig_1, ax_1 = render_table(seperated_dict[key], header_columns=0, col_width=5)
+    #separate each feature
+    separated_dict = dict(tuple(result_df.groupby('Feature')))
+    for key in separated_dict.keys():
+        separated_dict[key].to_pickle(output_folder + "/tables/" + file_name + "_of_"+ key + ".pkl")
+        fig_1, ax_1 = render_table(separated_dict[key], header_columns=0, col_width=5)
         fig_1.savefig(output_folder + "/figures/" + file_name +  "_of_" +key)
 
-    if verbose: print("Saved seperate feature coefficients as " + 
+    if verbose: print("Saved separate feature coefficients as " + 
                       output_folder + "/tables/" + file_name + ".pkl and " +
                       output_folder + "/figures/" + file_name + ".png")
     return
@@ -203,8 +205,8 @@ def main(input_file_path, output_folder_path):
     best_depth = read_input_file(input_file)    
     data_frame = pd.read_csv("data/processed/character_features_train.csv", index_col = 0)
     result_df = fit_best_model(data_frame, best_depth)
-    seperate_feature_coefficients(result_df, output_folder_path, "importance")   
-    print("\n##### Seperating Feature Importances Completed!")
+    separate_feature_coefficients(result_df, output_folder_path, "importance")   
+    print("\n##### Separating Feature Importances Completed!")
 
 
 if __name__ == "__main__":    
