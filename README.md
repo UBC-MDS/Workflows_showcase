@@ -54,10 +54,10 @@ The datasets can be collected from the source below.
 python src/get_datasets.py -i https://github.com/rudeboybert/fivethirtyeight/tree/master/data-raw/comic-characters -o data/raw -g -v
 ```
 
-The row datasets can be processed by using the following command:
+The raw datasets can be processed by using the following command:
 
 ```
-python src/preprocess_data.py -i data/raw -o data/processed -v
+python src/preprocess_data.py -i data/raw -o data/processed/clean_characters.csv -v
 ```
 
 To produce the EDA analysis, the generate_eda.py script can be executed by using the following command:
