@@ -1,8 +1,12 @@
 """
 Author: Aidan Mattrick
+
 Date: Nov 28, 2020
+
 This script trains models and output results in the form of a figure to be used for further analysis.
+
 Usage: analysis.py -i=<input> -o=<output> [-v]
+
 Options:
 -i <input>, --input <input>     Local processed training data csv file in directory
 -o <output>, --output <output>  Local output directory for created pngs
@@ -65,6 +69,7 @@ def validate_inputs(input_file_path, output_dir_path):
     -----------
     input_file_path : str
         input path to be verified
+
     output_file_path : str
         output path to be verified
         
@@ -125,6 +130,7 @@ def store_cross_val_results(model, scores, results):
     """
     Stores mean scores from cross_validate in results_dict for
     the given model model_name.
+
     Parameters
     ----------
     model :
@@ -133,9 +139,11 @@ def store_cross_val_results(model, scores, results):
         object return by `cross_validate`
     results_dict: dict
         dictionary to store results
+
     Returns
     ----------
         None
+
     """
     results[model] = {
         "mean_validation_accuracy": "{:0.4f}".format(np.mean(scores["test_score"])),
@@ -151,17 +159,22 @@ def store_cross_val_results(model, scores, results):
 def train_models(train_df, models, param_grid=None, output_dir=""):
     """
     Processes the data, trains the model, and returns a dataframe showing the results
+
     Parameters
     ----------
     train_df : pd.Dataframe
         Dataframe to be used in model
+
     models : dict
         models to be trained
+
     param_grid : dict
         hyperparameters for model
+
     Returns
     ----------
         pandas.Dataframe
+
     """
     X_train = train_df.drop(columns=['align'])
     y_train = train_df['align']

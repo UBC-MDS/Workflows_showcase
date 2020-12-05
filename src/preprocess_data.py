@@ -65,8 +65,8 @@ def preprocess_data():
     characters_data = pd.concat(publisher_dfs, ignore_index=True)
 
     character_name = characters_data['name'].str.split('(').str[0].str.strip()
-    characters_data['first_name'] = character_name.str.split(" ").str[0]
-    characters_data['last_name'] = character_name.str.split(" ", n=1).str[1]
+    characters_data['first_name'] = character_name.str.split(" ").str[0].str.lower()
+    characters_data['last_name'] = character_name.str.split(" ", n=1).str[1].str.lower()
     characters_data['align'] = characters_data['align'].replace(regex ="Reformed", value = "Good")
     characters_data['align'] = (characters_data['align'].str.split(' ').str[0]).astype("category")
     characters_data['eye'] = (characters_data['eye'].str.split(' ').str[0]).astype("category")
