@@ -34,7 +34,7 @@ def feature_engineer_data():
     output_file_slug = output_filename.split(".")[0]
     output_file_ext = output_filename.split(".")[-1]
 
-    clean_df = pd.read_csv(input_filename)
+    clean_df = pd.read_csv(input_filename, index_col=0)
 
     # Creating deployment data file from rows missing target values")
     deploy_df = clean_df[clean_df['align'].isnull()]
