@@ -72,6 +72,12 @@ To produce the machine learning analysis results, the analysis.py script can be 
 python src/analysis.py -i data/processed/clean_characters_train.csv -o results -v
 ```
 
+
+To produce seperate feature importances. the analysis_feature.py script can be executed by using the following command: 
+`
+python src/analysis_feature.py -i results/tables/optimized_model.pkl -o results
+`
+
 Note: These commands should run without any issues in Git Bash or Terminal. If you are using Windows operating system, you may encounter issues with saving Altair charts. Please refer [altair help](https://altair-viz.github.io/user_guide/saving_charts.html).
 
 
