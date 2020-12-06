@@ -203,7 +203,7 @@ def main(input_file_path, output_folder_path):
     if verbose: print(f"Running eda script with arguments: \n {args}")
     validate_inputs(input_file, output_dir)
     best_depth = read_input_file(input_file)    
-    data_frame = pd.read_csv("data/processed/character_features_train.csv", index_col = 0)
+    data_frame = pd.read_csv("data/processed/character_features_train.csv")
     result_df = fit_best_model(data_frame, best_depth)
     separate_feature_coefficients(result_df, output_folder_path, "importance")   
     print("\n##### Separating Feature Importances Completed!")
