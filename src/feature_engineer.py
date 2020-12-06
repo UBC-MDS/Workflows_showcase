@@ -36,14 +36,19 @@ def feature_engineer_data():
     output_file_ext = output_filename.split(".")[-1]
 
     # Read in cleaned data
-    clean_df = pd.read_csv(input_filename, index_col = 0)
+    clean_df = pd.read_csv(input_filename)
 
     # Apply feature engineering to generate new features
     common_names = build_common_name_list()
     feature_df = clean_df.assign(is_common = clean_df.first_name.isin(common_names[["Name"]].Name))
-    feature_df = feature_df.assign(name_len = feature_df["first_name"].apply(get_name_length))
+    feature_df = feature_df.assign(name_len = feature_df["first_name"].apply(get_name_length) + 
+                                              feature_df["last_name"].apply(get_name_length))
     feature_df = feature_df.assign(has_last_name = feature_df["last_name"].apply(has_last_name))
     feature_df["appear_per_yr"] = feature_df.apply(lambda x: norm(x['appearances'], x['year']), axis=1)
+
+    # Remove intermediate name columns
+    feature_df = feature_df.drop(["first_name",
+                                  "last_name"], axis=1)
 
     # Creating deployment data file from rows missing target values")
     deploy_df = feature_df[feature_df['align'].isnull()]
@@ -52,8 +57,8 @@ def feature_engineer_data():
 
     # Split train and test data
     train_df, test_df = train_test_split(feature_df, test_size=0.2, random_state=123)
-    train_df.to_csv(output_file_slug + "_train." + output_file_ext)
-    test_df.to_csv(output_file_slug + "_test." + output_file_ext)
+    train_df.to_csv(output_file_slug + "_train." + output_file_ext, index = False)
+    test_df.to_csv(output_file_slug + "_test." + output_file_ext, index = False)
 
     if verbose:
         print(f"Wrote deployment data output file: {output_file_slug}_deploy.{output_file_ext}")
