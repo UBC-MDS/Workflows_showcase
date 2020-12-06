@@ -80,7 +80,7 @@ def preprocess_data():
     characters_data['publisher'] = characters_data['publisher'].astype("category")
 
     if verbose: print(f"Writing full data output file: {output_filename}")
-    characters_data.to_csv(output_filename)
+    characters_data.to_csv(output_filename, index = False)
     if verbose: print("\nOutput data summary:")
     if verbose: print(f"{characters_data.info()}")
 

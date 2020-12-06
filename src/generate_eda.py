@@ -69,7 +69,7 @@ def read_input_file(input_file_path):
         if path is valid and verified
     """
     try:
-        data_frame = pd.read_csv(input_file_path, index_col=0)
+        data_frame = pd.read_csv(input_file_path)
         if verbose: print('Input filename path is valid.')
     except:
         print(input_file_path + 'Input filename path is not valid. Please check!')
@@ -89,6 +89,7 @@ def read_input_file(input_file_path):
                         'first_appearance', 
                         'year', 
                         'publisher']
+
 
     if not all([item in data_frame.columns for item in combined_columns]):
         print(input_file_path + " should contain these columns: " + str(combined_columns))
