@@ -133,7 +133,7 @@ The final report can be found [here](https://github.com/UBC-MDS/Workflows_showca
 
 [Milestone 1: 0.0.1](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.0.1)
 
-[Milestone 2: 0.1.0]
+[Milestone 2: 0.1.0](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.1.0)
 
 
 
