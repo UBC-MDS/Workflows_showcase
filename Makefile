@@ -62,6 +62,26 @@ results/models/optimized_model.pkl : \
 		    -i data/processed/character_features_train.csv \
 			-o results -v
 
+#Feature importances with model Random Forest Classifier
+results/figures/importance_of_appearances.png \
+results/figures/importance_of_eye.png \
+results/figures/importance_of_hair.png \
+results/figures/importance_of_id.png \ 
+results/figures/importance_of_publisher.png \
+results/figures/importance_of_sex.png \
+results/figures/importance_of_year.png \
+results/tables/importance_of_appearances.pkl \
+results/tables/importance_of_eye.pkl \
+results/tables/importance_of_hair.pkl \
+results/tables/importance_of_id.pkl \
+results/tables/importance_of_publisher.pkl \
+results/tables/importance_of_sex.pkl \
+results/tables/importance_of_year.pkl : \
+	results/tables/optimized_model.pkl \
+	src/analysis_feature.py
+		python src/analysis_feature.py \
+			-i results/tables/optimized_model.pkl \
+			-o results
 
 # Generate summary markdown report
 report/summary_report.md : \
