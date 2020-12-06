@@ -54,10 +54,10 @@ The datasets can be collected from the source below.
 python src/get_datasets.py -i https://github.com/rudeboybert/fivethirtyeight/tree/master/data-raw/comic-characters -o data/raw -g -v
 ```
 
-The row datasets can be processed by using the following command:
+The raw datasets can be processed by using the following command:
 
 ```
-python src/preprocess_data.py -i data/raw -o data/processed -v
+python src/preprocess_data.py -i data/raw -o data/processed/clean_characters.csv -v
 ```
 
 To produce the EDA analysis, the generate_eda.py script can be executed by using the following command:
@@ -74,9 +74,9 @@ python src/analysis.py -i data/processed/clean_characters_train.csv -o results -
 
 
 To produce seperate feature importances. the analysis_feature.py script can be executed by using the following command: 
-`
+```
 python src/analysis_feature.py -i results/tables/optimized_model.pkl -o results
-`
+```
 
 Note: These commands should run without any issues in Git Bash or Terminal. If you are using Windows operating system, you may encounter issues with saving Altair charts. Please refer [altair help](https://altair-viz.github.io/user_guide/saving_charts.html).
 
@@ -133,7 +133,7 @@ The final report can be found [here](https://github.com/UBC-MDS/Workflows_showca
 
 [Milestone 1: 0.0.1](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.0.1)
 
-[Milestone 2: 0.1.0]
+[Milestone 2: 0.1.0](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.1.0)
 
 
 

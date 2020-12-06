@@ -15,6 +15,7 @@ Options:
 import os
 import pandas as pd
 import numpy as np
+import requests
 from sklearn.model_selection import train_test_split
 from datetime import datetime
 from docopt import docopt
@@ -34,15 +35,23 @@ def feature_engineer_data():
     output_file_slug = output_filename.split(".")[0]
     output_file_ext = output_filename.split(".")[-1]
 
-    clean_df = pd.read_csv(input_filename, index_col=0)
+    # Read in cleaned data
+    clean_df = pd.read_csv(input_filename, index_col = 0)
+
+    # Apply feature engineering to generate new features
+    common_names = build_common_name_list()
+    feature_df = clean_df.assign(is_common = clean_df.first_name.isin(common_names[["Name"]].Name))
+    feature_df = feature_df.assign(name_len = feature_df["first_name"].apply(get_name_length))
+    feature_df = feature_df.assign(has_last_name = feature_df["last_name"].apply(has_last_name))
+    feature_df["appear_per_yr"] = feature_df.apply(lambda x: norm(x['appearances'], x['year']), axis=1)
 
     # Creating deployment data file from rows missing target values")
-    deploy_df = clean_df[clean_df['align'].isnull()]
+    deploy_df = feature_df[feature_df['align'].isnull()]
     deploy_df.to_csv(output_file_slug + "_deploy." + output_file_ext)
-    clean_df = clean_df[clean_df['align'].notna()]
+    feature_df = feature_df[feature_df['align'].notna()]
 
     # Split train and test data
-    train_df, test_df = train_test_split(clean_df, test_size=0.2, random_state=123)
+    train_df, test_df = train_test_split(feature_df, test_size=0.2, random_state=123)
     train_df.to_csv(output_file_slug + "_train." + output_file_ext)
     test_df.to_csv(output_file_slug + "_test." + output_file_ext)
 
@@ -54,6 +63,99 @@ def feature_engineer_data():
         print(f"Wrote test data output file: {output_file_slug}_test.{output_file_ext}")
 
     print("\n##### feature_engineer: Finished processing features!")
+
+
+def build_common_name_list():
+    """
+    Returns a table of common names.
+
+    Parameters:
+    ------
+
+    Returns:
+    -------
+    table of common names: DataFrame
+
+    """
+    # URLs with common names from census for male and female
+    url_male = "https://namecensus.com/male_names_alpha.htm"
+    url_female = "https://namecensus.com/female_names_alpha.htm"
+
+    male_names_page_1 = requests.get(url_male)
+    top_male_first_name = pd.read_html(male_names_page_1.text)
+
+    female_names_page_1 = requests.get(url_female)
+    top_female_first_name = pd.read_html(female_names_page_1.text)
+
+    top_names = pd.concat([top_male_first_name[0], top_female_first_name[0]], ignore_index=True)
+    return pd.DataFrame(top_names["Name"].str.lower())
+
+def get_name_length(name):
+    """
+    Returns the length of first name.
+
+    Parameters:
+    ------
+    name: (str)
+    the input name
+
+    Returns:
+    -------
+    length of name: (float)
+
+    """
+    if name == name:
+        return len(name)
+    else:
+        return 0
+
+def has_last_name(name):
+    """
+    Returns whether the character has a last name.
+    
+    Parameters:
+    ------
+    name: (str)
+    the input name
+    
+    Returns:
+    ------
+    True/False of whether the last name exists (boolean)
+    
+    """
+    return name == name
+    
+def norm(appearances, year, MAX_YR=2013):
+    """
+    Returns number of appearances per year.
+    
+    Parameters:
+    ------
+    appearances: (float)
+    the number of appearances of the character
+    
+    year: (float)
+    the year of its first appearance
+    
+    Keyword arguments:
+    ------
+    MAX_YR: (float)
+    year boundary for the source data
+    
+    Returns:
+    ------
+    appearances_per_yr: (float)
+    the number of appearances per year for each character
+    
+    Examples:
+    ------
+    norm(10, 2004) = 1
+    """
+    if year == year and appearances == appearances:
+        appearances_per_yr = appearances/(MAX_YR - year + 1)
+        return appearances_per_yr
+    else:
+        return 
 
 
 if __name__ == "__main__":
