@@ -144,7 +144,9 @@ The final report can be found [here](https://github.com/UBC-MDS/Workflows_showca
 
 2. [Sample Group Project](https://github.com/ttimbers/breast_cancer_predictor)
 
-2. [Render Table Sample](https://stackoverflow.com/questions/19726663/how-to-save-the-pandas-dataframe-series-data-as-a-figure)
+3. [Render Table Sample](https://stackoverflow.com/questions/19726663/how-to-save-the-pandas-dataframe-series-data-as-a-figure)
+
+4. [Name Census: United States Demographic Data](https://namecensus.com)
 
 ```python
 
