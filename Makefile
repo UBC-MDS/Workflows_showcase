@@ -67,7 +67,6 @@ results/figures/importance_of_appearances.png \
 results/figures/importance_of_eye.png \
 results/figures/importance_of_hair.png \
 results/figures/importance_of_id.png \
-results/figures/importance_of_publisher \
 results/figures/importance_of_publisher.png \
 results/figures/importance_of_sex.png \
 results/figures/importance_of_year.png \
@@ -81,8 +80,9 @@ results/tables/importance_of_year.pkl \
 results/tables/importance_of_year.pkl : \
     results/tables/optimized_model.pkl \
 	src/analysis_feature.py
-	    -i results/tables/optimized_model.pkl \
-		-o results
+		python src/analysis_feature.py \
+	    	-i results/tables/optimized_model.pkl \
+			-o results
 
 # Generate summary markdown report
 report/summary_report.md : \
@@ -95,6 +95,11 @@ report/summary_report.md : \
     results/figures/model_comparison.png \
     results/tables/optimized_model.pkl \
     results/tables/model_comparison.pkl \
+	results/figures/importance_of_eye.png \
+	results/figures/importance_of_hair.png \
+	results/figures/importance_of_id.png \
+	results/figures/importance_of_publisher.png \
+	results/figures/importance_of_sex.png \
 	results/models/optimized_model.pkl
 	    jupyter nbconvert --to html report/summary_report.ipynb --no-input
 
