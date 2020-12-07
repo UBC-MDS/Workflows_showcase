@@ -80,6 +80,7 @@ python src/analysis_feature.py -i results/tables/optimized_model.pkl -o results
 
 Note: These commands should run without any issues in Git Bash or Terminal. If you are using Windows operating system, you may encounter issues with saving Altair charts. Please refer [altair help](https://altair-viz.github.io/user_guide/saving_charts.html).
 
+On Linux systems run code `apt-get install chromium-chromedriver` in Git Bash or Terminal.
 
 ![Flow Chart](img/flow_chart00.png)
 
