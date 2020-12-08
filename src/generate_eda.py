@@ -23,6 +23,12 @@ import altair as alt
 import pickle
 from docopt import docopt
 from render_table import render_table
+from selenium import webdriver
+from altair_saver import save
+from webdriver_manager.chrome import ChromeDriverManager
+
+driver = webdriver.Chrome(ChromeDriverManager().install())
+alt.data_transformers.disable_max_rows()
 args = docopt(__doc__)
 
 def validate_inputs(input_file_path, output_dir_path):
@@ -195,7 +201,7 @@ def generate_align_vs_features(data_frame, output_folder, file_name):
         color = alt.Color("align", legend=alt.Legend(title="Alignment"))
         ).properties(height=300, width=200).repeat(repeat=features, columns=3))
 
-    align_vs_features.save(output_folder +"/figures/" + file_name + '.png')
+    save(align_vs_features, output_folder +"/figures/" + file_name + '.png', method='selenium', webdriver=driver)
     if verbose: print("Alignment vs features chart created, saved to " + 
                       output_folder + 
                       "/figures/" + 
@@ -227,7 +233,7 @@ def generate_align_vs_year(data_frame, output_folder, file_name):
         tooltip = 'year'
         ).properties(height=300, width=500)).interactive()
 
-    align_vs_year.save(output_folder +"/figures/" + file_name + '.png')
+    save(align_vs_year, output_folder +"/figures/" + file_name + '.png', method='selenium', webdriver=driver)
     if verbose: print("Alignment vs year chart created, saved to " + 
                       output_folder + 
                       "/figures/" + 
@@ -262,7 +268,7 @@ def generate_align_vs_appearances(data_frame, output_folder, file_name):
                 size='count()'
                 ).properties(height=300, width=500)).interactive()
 
-    align_vs_appearances.save(output_folder +"/figures/" + file_name + '.png')
+    save(align_vs_appearances, output_folder +"/figures/" + file_name + '.png', method='selenium', webdriver=driver)
     if verbose: print("Alignment vs appearances chart created, saved to " + 
                       output_folder + 
                       "/figures/" + 
