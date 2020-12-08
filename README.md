@@ -78,7 +78,6 @@ To produce seperate feature importances. the analysis_feature.py script can be e
 python src/analysis_feature.py -i results/tables/optimized_model.pkl -o results
 ```
 
-Note: These commands should run without any issues in Git Bash or Terminal. If you are using Windows operating system, you may encounter issues with saving Altair charts. Please refer [altair help](https://altair-viz.github.io/user_guide/saving_charts.html).
 
 
 ![Flow Chart](img/flow_chart00.png)
@@ -93,17 +92,9 @@ npm install -g vega-lite vega-cli canvas --force
 ```
 
 
-Python 3.8.5 and Python packages:
+Note: These commands should run without any issues in Git Bash or Terminal. Please refer [altair help](https://altair-viz.github.io/user_guide/saving_charts.html).
 
-* docopt==0.6.2
-
-* pandas==1.1.3
-
-* numpy==1.19.2
-
-* altair==4.1.0
-
-* matplotlib==3.3.3
+For problems in saving Altair charts, on Linux systems run code `apt-get install chromium-chromedriver` in Git Bash or Terminal.
 
 <!-- #endregion -->
 
