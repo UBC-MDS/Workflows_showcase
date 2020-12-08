@@ -94,7 +94,7 @@ npm install -g vega-lite vega-cli canvas --force
 
 Note: These commands should run without any issues in Git Bash or Terminal. Please refer [altair help](https://altair-viz.github.io/user_guide/saving_charts.html).
 
-If you fave any problems saving Altair charts, on Linux systems run code `apt-get install chromium-chromedriver` in Git Bash or Terminal.
+For problems in saving Altair charts, on Linux systems run code `apt-get install chromium-chromedriver` in Git Bash or Terminal.
 
 <!-- #endregion -->
 
