@@ -217,9 +217,7 @@ def train_models(train_df, models, output_dir="", fileprefix=""):
 
     binary_transformer = Pipeline(
         steps=[
-            ("imputer", SimpleImputer(strategy='constant')),
-            ("onehot", OneHotEncoder(handle_unknown='ignore'))
-            #("onehot", OneHotEncoder(handle_unknown='error', drop='if_binary', dtype=int)),
+            ("onehot", OneHotEncoder(handle_unknown='error', drop='if_binary', dtype=int)),
         ]
     )
 
@@ -275,7 +273,7 @@ def optimize_model(train_df, param_grid=None, output_dir="", fileprefix=""):
     numeric_features = ['appearances', 'year', 'name_len', 'appear_per_yr']
     categorical_features = ['id', 'eye', 'hair', 'publisher', 'sex']
     drop_features = ['name', 'gsm', 'first_appearance', 'first_name', 'last_name']
-    binary_features = ['is_common', 'last_name', 'has_last_name']
+    binary_features = ['is_common', 'has_last_name']
 
     numeric_transformer = Pipeline(
         steps=[
@@ -293,9 +291,7 @@ def optimize_model(train_df, param_grid=None, output_dir="", fileprefix=""):
 
     binary_transformer = Pipeline(
         steps=[
-            ("imputer", SimpleImputer(strategy='constant')),
-            ("onehot", OneHotEncoder(handle_unknown='ignore'))
-            #("onehot", OneHotEncoder(handle_unknown='error', drop='if_binary', dtype=int)),
+            ("onehot", OneHotEncoder(handle_unknown='error', drop='if_binary', dtype=int)),
         ]
     )
 
