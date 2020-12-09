@@ -31,6 +31,18 @@ driver = webdriver.Chrome(ChromeDriverManager().install())
 alt.data_transformers.disable_max_rows()
 args = docopt(__doc__)
 
+def main(input_file_path, output_folder_path):
+    print("\n\n##### EDA: Generating EDA Data!")
+    if verbose: print(f"Running eda script with arguments: \n {args}")
+    validate_inputs(input_file, output_dir)
+    data_frame = read_input_file(input_file_path)
+    generate_dataset_overview(data_frame, output_folder_path, "dataset_overview")
+    generate_feature_overview(data_frame, output_folder_path, "feature_overview")
+    generate_align_vs_features(data_frame, output_folder_path, "alignment_vs_features")
+    generate_align_vs_year(data_frame, output_folder_path, "alignment_over_time")
+    generate_align_vs_appearances(data_frame, output_folder_path, "appearances_by_alignment")
+    print("\n##### EDA: EDA Data Generation Completed!")
+
 def validate_inputs(input_file_path, output_dir_path):
     """
     Validates input argument paths.
@@ -274,19 +286,6 @@ def generate_align_vs_appearances(data_frame, output_folder, file_name):
                       "/figures/" + 
                       file_name + 
                       '.png')
-
-
-def main(input_file_path, output_folder_path):
-    print("\n\n##### EDA: Generating EDA Data!")
-    if verbose: print(f"Running eda script with arguments: \n {args}")
-    validate_inputs(input_file, output_dir)
-    data_frame = read_input_file(input_file_path)
-    generate_dataset_overview(data_frame, output_folder_path, "dataset_overview")
-    generate_feature_overview(data_frame, output_folder_path, "feature_overview")
-    generate_align_vs_features(data_frame, output_folder_path, "alignment_vs_features")
-    generate_align_vs_year(data_frame, output_folder_path, "alignment_over_time")
-    generate_align_vs_appearances(data_frame, output_folder_path, "appearances_by_alignment")
-    print("\n##### EDA: EDA Data Generation Completed!")
 
 
 if __name__ == "__main__":    
