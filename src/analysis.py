@@ -57,7 +57,6 @@ from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
 from sklearn.svm import SVC, SVR
 
-from xgboost import XGBClassifier
 from lightgbm.sklearn import LGBMClassifier
 from catboost import CatBoostClassifier
 
@@ -379,7 +378,6 @@ def main(input_file_path, output_folder_path):
     if verbose: print("Training model(s)")
     models = {
         "Random Forest Classifier": RandomForestClassifier(),
-        "XGBClassifier": XGBClassifier(),
         "LGBMClassifier": LGBMClassifier(),
         "CatBoostClassifier": CatBoostClassifier(verbose=0)
     }
