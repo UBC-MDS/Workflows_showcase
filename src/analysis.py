@@ -123,7 +123,21 @@ def read_input_file(input_file_path):
         sys.exit()
 
     # TODO possibly move this to a config or test script to remove magic values
-    combined_columns = ['name', 'id', 'align', 'eye', 'hair', 'sex', 'gsm','appearances', 'first_appearance', 'year', 'publisher', 'first_name', 'last_name', 'is_common', 'name_len', 'has_last_name', 'appear_per_yr']
+    combined_columns = ['name', 
+                        'id', 
+                        'align', 
+                        'eye', 
+                        'hair', 
+                        'sex', 
+                        'gsm',
+                        'appearances', 
+                        'first_appearance', 
+                        'year', 
+                        'publisher', 
+                        'is_common', 
+                        'name_len', 
+                        'has_last_name', 
+                        'appear_per_yr']
 
     if not all([item in data_frame.columns for item in combined_columns]):
         print(input_file_path + " should contain these columns: " + str(combined_columns))
@@ -198,7 +212,7 @@ def train_models(train_df, models, output_dir="", fileprefix=""):
 
     numeric_features = ['appearances', 'year', 'name_len', 'appear_per_yr']
     categorical_features = ['id', 'eye', 'hair', 'publisher', 'sex']
-    drop_features = ['name', 'gsm', 'first_appearance', 'first_name', 'last_name']
+    drop_features = ['name', 'gsm', 'first_appearance']
     binary_features = ['is_common', 'has_last_name']
 
     numeric_transformer = Pipeline(
@@ -272,7 +286,7 @@ def optimize_model(train_df, param_grid=None, output_dir="", fileprefix=""):
 
     numeric_features = ['appearances', 'year', 'name_len', 'appear_per_yr']
     categorical_features = ['id', 'eye', 'hair', 'publisher', 'sex']
-    drop_features = ['name', 'gsm', 'first_appearance', 'first_name', 'last_name']
+    drop_features = ['name', 'gsm', 'first_appearance']
     binary_features = ['is_common', 'has_last_name']
 
     numeric_transformer = Pipeline(
