@@ -37,6 +37,25 @@ from subprocess import call
 
 args = docopt(__doc__)
 
+def main(input_file_path, output_folder_path):
+    print("\n\n##### Feature Importances")
+    if verbose: print(f"Running eda script with arguments: \n {args}")
+    
+    # Validates input argument paths by validate_input(input_file_path, output_dir_path)
+    validate_inputs(input_file, output_dir)
+    
+    # Reads input file path and reads optimized model
+    best_depth = read_input_file(input_file)    
+    
+    data_frame = pd.read_csv("data/processed/character_features_train.csv")
+    
+    # Processes the data, trains the model, and returns a dataframe showing the feature importances in descending order
+    result_df = fit_best_model(data_frame, best_depth)
+    
+    # Separates feature coefficients of the optimized model results, and saves resulting table
+    separate_feature_coefficients(result_df, output_folder_path, "importance")   
+    print("\n##### Separating Feature Importances Completed!")
+
 def validate_inputs(input_file_path, output_dir_path):
     """
     Validates input argument paths.
@@ -196,17 +215,6 @@ def separate_feature_coefficients(data_frame, output_folder, file_name):
                       output_folder + "/tables/" + file_name + ".pkl and " +
                       output_folder + "/figures/" + file_name + ".png")
     return
-
-
-def main(input_file_path, output_folder_path):
-    print("\n\n##### Feature Importances")
-    if verbose: print(f"Running eda script with arguments: \n {args}")
-    validate_inputs(input_file, output_dir)
-    best_depth = read_input_file(input_file)    
-    data_frame = pd.read_csv("data/processed/character_features_train.csv")
-    result_df = fit_best_model(data_frame, best_depth)
-    separate_feature_coefficients(result_df, output_folder_path, "importance")   
-    print("\n##### Separating Feature Importances Completed!")
 
 
 if __name__ == "__main__":    
