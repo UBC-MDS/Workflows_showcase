@@ -2,8 +2,8 @@
 # Craig McLaughlin, Dec 2, 2020
 
 # This makefile script executes the retrieval, cleaning, exploratory analysis,
-# feature transformation, machine learning training, machine learning 
-# analysis/prediction, and final reporting analysis of a dataset of DC and 
+# feature transformation, machine learning training, machine learning
+# analysis/prediction, and final reporting analysis of a dataset of DC and
 # Marvel comic book characters and their traits. There are no input arguments.
 
 # example usage:
@@ -79,25 +79,14 @@ results/models/polarized_optimized_model.pkl : \
 			-o results -f polarized_ -v
 
 # Feature importance analysis
-results/figures/importance_of_appearances.png \
-results/figures/importance_of_eye.png \
-results/figures/importance_of_hair.png \
-results/figures/importance_of_id.png \
-results/figures/importance_of_publisher.png \
-results/figures/importance_of_sex.png \
-results/figures/importance_of_year.png \
-results/tables/importance_of_appearances.pkl \
-results/tables/importance_of_eye.pkl \
-results/tables/importance_of_hair.pkl \
-results/tables/importance_of_id.pkl \
-results/tables/importance_of_publisher.pkl \
-results/tables/importance_of_sex.pkl \
-results/tables/importance_of_year.pkl : \
-    results/tables/polarized_optimized_model.pkl \
+results/figures/importance.png : \
+    results/tables/optimized_model.pkl \
+	data/processed/character_features_train.csv \
 	src/analysis_feature.py
 		python src/analysis_feature.py \
-	    	-i results/tables/optimized_model.pkl \
-			-o results
+	    	-i results/models/optimized_model.pkl \
+			-j data/processed/character_features_train.csv \
+			-o results -v
 
 # Generate summary markdown report
 report/summary_report.md : \
@@ -107,11 +96,10 @@ report/summary_report.md : \
 	results/tables/dataset_overview.pkl \
 	results/tables/feature_overview.pkl \
     results/figures/model_comparison.png \
-	results/figures/importance_of_eye.png \
-	results/figures/importance_of_hair.png \
-	results/figures/importance_of_id.png \
-	results/figures/importance_of_publisher.png \
-	results/figures/importance_of_sex.png
+    results/tables/optimized_model.pkl \
+    results/tables/model_comparison.pkl \
+	results/figures/importance.png \
+	results/models/optimized_model.pkl
 	    jupyter nbconvert --to html report/summary_report.ipynb --no-input
 
 clean :
