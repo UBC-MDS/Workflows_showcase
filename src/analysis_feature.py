@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 import pickle
 from docopt import docopt
-from render_table import render_table
+from character_utils import *
 from sklearn import datasets
 from sklearn.compose import (
     ColumnTransformer,
@@ -41,16 +41,16 @@ args = docopt(__doc__)
 def main(input_model, input_csv, output_folder_path):
     print("\n\n##### Feature Importances")
     if verbose: print(f"Running analysis_feature script with arguments: \n {args}")
-    
+
     # Validates input argument paths by validate_input(input_file_path_1, input_file_path_2, output_dir_path)
     validate_inputs(input_model, input_csv, output_folder_path)
-    
+
     # Reads input file paths and reads optimized model and processed train data
-    model, data_frame = read_input_file(input_model, input_csv)    
-    
+    model, data_frame = read_input_file(input_model, input_csv)
+
     # Processes the data, trains the model, and returns a dataframe showing the top 15 feature importances in descending order
     result_df = fit_best_model(model, data_frame, output_folder_path, "importance")
-  
+
     print("\n##### Feature Importances Completed!")
 
 
@@ -67,7 +67,7 @@ def validate_inputs(input_file_path_1, input_file_path_2, output_dir_path):
 
     output_file_path : str
         output path to be verified
-        
+
     Returns:
     -----------
     None
@@ -97,10 +97,10 @@ def read_input_file(input_model, input_csv):
     -----------
     input_model : str
         input path to be verified
-    
+
     input_csv : str
         input path to be verified
-        
+
     Returns:
     -----------
     sklearn.pipeline.Pipeline, pd.DataFrame
@@ -116,8 +116,6 @@ def read_input_file(input_model, input_csv):
         print(input_file_path + 'Input filename path is not valid. Please check!')
         sys.exit()
 
-    if verbose: print('Returning optimized model and train data frame.')
-    
     return model, data_frame
 
 
@@ -135,9 +133,9 @@ def fit_best_model(model, data_frame, output_folder, file_name):
 
     output_folder : str
         output folder path
-    
+
     file_name : str
-        generated png output file name 
+        generated png output file name
 
     Returns
     ----------
@@ -152,7 +150,7 @@ def fit_best_model(model, data_frame, output_folder, file_name):
     binary_features = ['is_common', 'has_last_name']
 
     model.fit(X_train, y_train)
-   
+
     ohe_columns_cat = list(
         model.named_steps["preprocessor"].named_transformers_["pipeline-2"]
         .named_steps["onehot"]
@@ -160,15 +158,15 @@ def fit_best_model(model, data_frame, output_folder, file_name):
     )
 
     features_list = numeric_features + ohe_columns_cat + binary_features
-    
+
     result_df = pd.DataFrame(
         {
             "Features": features_list,
             "Importance Coefficient": model.named_steps[
-                "LGBMC"
+                "best_model"
             ].feature_importances_,
             "Importance Type": model.named_steps[
-                "LGBMC"
+                "best_model"
             ].importance_type,
         }
     )
@@ -180,13 +178,13 @@ def fit_best_model(model, data_frame, output_folder, file_name):
     fig_1.savefig(output_folder + "/figures/" + file_name)
     result_df[:15].to_pickle(output_folder + "/tables/" + file_name)
 
-    if verbose: print("Saved separate feature coefficients as " + 
+    if verbose: print("Saved separate feature coefficients as " +
                       output_folder + "/tables/" + file_name + ".pkl and " +
                       output_folder + "/figures/" + file_name + ".png")
-    return 
+    return
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
     input_model_file_path = args["--input_1"]
     input_csv_file_path = args["--input_2"]
     output_dir = args["--output"]
