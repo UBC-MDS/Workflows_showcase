@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 import pickle
 from docopt import docopt
-from render_table import render_table
+from character_utils import *
 from sklearn import datasets
 from sklearn.compose import (
     ColumnTransformer,
@@ -107,7 +107,7 @@ def read_input_file(input_file_path):
         print(input_file_path + 'Input filename path is not valid. Please check!')
         sys.exit()
 
-    best_depth = data_frame.loc[0, 'param_LGBMC__max_depth']
+    best_depth = data_frame.loc[0, 'param_best_model__max_depth']
     if verbose: print('Creating and returning optimized model depth.')
     return best_depth
 

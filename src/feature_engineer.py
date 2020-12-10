@@ -50,22 +50,36 @@ def feature_engineer_data():
     feature_df = feature_df.drop(["first_name",
                                   "last_name"], axis=1)
 
+    # Create a set of data without neutral targets
+    feature_polarized_df = feature_df[feature_df['align'] != 'Neutral']
+
     # Creating deployment data file from rows missing target values")
     deploy_df = feature_df[feature_df['align'].isnull()]
     deploy_df.to_csv(output_file_slug + "_deploy." + output_file_ext)
     feature_df = feature_df[feature_df['align'].notna()]
+
+    deploy_polarized_df = feature_polarized_df[feature_polarized_df['align'].isnull()]
+    deploy_polarized_df.to_csv(output_file_slug + "_polar_deploy." + output_file_ext)
+    feature_polarized_df = feature_polarized_df[feature_polarized_df['align'].notna()]
 
     # Split train and test data
     train_df, test_df = train_test_split(feature_df, test_size=0.2, random_state=123)
     train_df.to_csv(output_file_slug + "_train." + output_file_ext, index = False)
     test_df.to_csv(output_file_slug + "_test." + output_file_ext, index = False)
 
+    train_polar_df, test_polar_df = train_test_split(feature_polarized_df, test_size=0.2, random_state=123)
+    train_polar_df.to_csv(output_file_slug + "_polar_train." + output_file_ext, index = False)
+    test_polar_df.to_csv(output_file_slug + "_polar_test." + output_file_ext, index = False)
+
     if verbose:
         print(f"Wrote deployment data output file: {output_file_slug}_deploy.{output_file_ext}")
+        print(f"Wrote polarized deployment data output file: {output_file_slug}_polar_deploy.{output_file_ext}")
     if verbose:
         print(f"Wrote train data output file: {output_file_slug}_train.{output_file_ext}")
+        print(f"Wrote polarized train data output file: {output_file_slug}_polar_train.{output_file_ext}")
     if verbose:
         print(f"Wrote test data output file: {output_file_slug}_test.{output_file_ext}")
+        print(f"Wrote polarized test data output file: {output_file_slug}_polar_test.{output_file_ext}")
 
     print("\n##### feature_engineer: Finished processing features!")
 
