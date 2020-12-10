@@ -80,8 +80,7 @@ results/models/polarized_optimized_model.pkl : \
 
 # Feature importance analysis
 results/figures/importance.png : \
-    results/tables/optimized_model.pkl \
-	data/processed/character_features_train.csv \
+    results/tables/polarized_optimized_model.pkl \
 	src/analysis_feature.py
 		python src/analysis_feature.py \
 	    	-i results/models/optimized_model.pkl \
@@ -96,10 +95,7 @@ report/summary_report.md : \
 	results/tables/dataset_overview.pkl \
 	results/tables/feature_overview.pkl \
     results/figures/model_comparison.png \
-    results/tables/optimized_model.pkl \
-    results/tables/model_comparison.pkl \
-	results/figures/importance.png \
-	results/models/optimized_model.pkl
+	results/figures/importance.png 
 	    jupyter nbconvert --to html report/summary_report.ipynb --no-input
 
 clean :

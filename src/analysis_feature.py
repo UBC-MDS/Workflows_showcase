@@ -116,9 +116,7 @@ def read_input_file(input_model, input_csv):
         print(input_file_path + 'Input filename path is not valid. Please check!')
         sys.exit()
 
-    best_depth = data_frame.loc[0, 'param_best_model__max_depth']
-    if verbose: print('Creating and returning optimized model depth.')
-    return best_depth
+    return model, data_frame
 
 
 def fit_best_model(model, data_frame, output_folder, file_name):
@@ -165,10 +163,10 @@ def fit_best_model(model, data_frame, output_folder, file_name):
         {
             "Features": features_list,
             "Importance Coefficient": model.named_steps[
-                "LGBMC"
+                "best_model"
             ].feature_importances_,
             "Importance Type": model.named_steps[
-                "LGBMC"
+                "best_model"
             ].importance_type,
         }
     )

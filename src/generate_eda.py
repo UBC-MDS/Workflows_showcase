@@ -22,7 +22,7 @@ import pandas as pd
 import altair as alt
 import pickle
 from docopt import docopt
-from render_table import render_table
+from character_utils import *
 from selenium import webdriver
 from altair_saver import save
 from webdriver_manager.chrome import ChromeDriverManager
