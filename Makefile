@@ -2,8 +2,8 @@
 # Craig McLaughlin, Dec 2, 2020
 
 # This makefile script executes the retrieval, cleaning, exploratory analysis,
-# feature transformation, machine learning training, machine learning 
-# analysis/prediction, and final reporting analysis of a dataset of DC and 
+# feature transformation, machine learning training, machine learning
+# analysis/prediction, and final reporting analysis of a dataset of DC and
 # Marvel comic book characters and their traits. There are no input arguments.
 
 # example usage:
@@ -50,39 +50,42 @@ data/processed/character_features_deploy.csv : \
 	    -i data/processed/clean_characters.csv \
 	    -o data/processed/character_features.csv -v
 
-# Machine learning modelling
-results/figures/optimized_model.png \
-results/figures/model_comparison.png \
-results/tables/optimized_model.pkl \
+# Machine learning model selection
 results/tables/model_comparison.pkl \
-results/models/optimized_model.pkl : \
+results/figures/model_comparison.png : \
     data/processed/character_features_train.csv \
-	src/analysis.py
-	    python src/analysis.py \
+	src/model_selection.py
+	    python src/model_selection.py \
 		    -i data/processed/character_features_train.csv \
 			-o results -v
 
+# Machine learning model optimization
+results/tables/optimized_model.pkl \
+results/models/optimized_model.pkl : \
+    results/figures/model_comparison.png \
+	src/model_optimize.py
+	    python src/model_optimize.py \
+		    -i data/processed/character_features_train.csv \
+			-o results -v
+
+# Machine learning model optimization no neutrals
+results/figures/polarized_optimized_model.png \
+results/tables/polarized_optimized_model.pkl \
+results/models/polarized_optimized_model.pkl : \
+    results/models/optimized_model.pkl \
+	src/model_optimize.py
+	    python src/model_optimize.py \
+		    -i data/processed/character_features_polar_train.csv \
+			-o results -f polarized_ -v
+
 # Feature importance analysis
-results/figures/importance_of_appearances.png \
-results/figures/importance_of_eye.png \
-results/figures/importance_of_hair.png \
-results/figures/importance_of_id.png \
-results/figures/importance_of_publisher.png \
-results/figures/importance_of_sex.png \
-results/figures/importance_of_year.png \
-results/tables/importance_of_appearances.pkl \
-results/tables/importance_of_eye.pkl \
-results/tables/importance_of_hair.pkl \
-results/tables/importance_of_id.pkl \
-results/tables/importance_of_publisher.pkl \
-results/tables/importance_of_sex.pkl \
-results/tables/importance_of_year.pkl \
-results/tables/importance_of_year.pkl : \
-    results/tables/optimized_model.pkl \
+results/figures/importance.png : \
+    results/tables/polarized_optimized_model.pkl \
 	src/analysis_feature.py
 		python src/analysis_feature.py \
-	    	-i results/tables/optimized_model.pkl \
-			-o results
+	    	-i results/models/optimized_model.pkl \
+			-j data/processed/character_features_train.csv \
+			-o results -v
 
 # Generate summary markdown report
 report/summary_report.md : \
@@ -91,16 +94,8 @@ report/summary_report.md : \
 	results/figures/appearances_by_alignment.png \
 	results/tables/dataset_overview.pkl \
 	results/tables/feature_overview.pkl \
-	results/figures/optimized_model.png \
     results/figures/model_comparison.png \
-    results/tables/optimized_model.pkl \
-    results/tables/model_comparison.pkl \
-	results/figures/importance_of_eye.png \
-	results/figures/importance_of_hair.png \
-	results/figures/importance_of_id.png \
-	results/figures/importance_of_publisher.png \
-	results/figures/importance_of_sex.png \
-	results/models/optimized_model.pkl
+	results/figures/importance.png 
 	    jupyter nbconvert --to html report/summary_report.ipynb --no-input
 
 clean :
