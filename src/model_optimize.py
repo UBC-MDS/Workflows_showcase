@@ -44,7 +44,7 @@ def main(input_file, output_dir):
     # Export optimized model for prediction and analysis
     optimized_model = character_model.get_model()
     pickle.dump(optimized_model,
-                open(output_dir + "/models/optimized_model.pkl", 'wb'))
+                open(output_dir + "/models/" + filename_prefix + "optimized_model.pkl", 'wb'))
 
     print("\n\n##### Model Optimization: Optimizing Models Complete!")
 
