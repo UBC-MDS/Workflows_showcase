@@ -12,20 +12,20 @@ RUN apt-get update && \
 
 # Install python dependencies via conda
 RUN conda install -y -c conda-forge \
-    altair \
-    altair_saver \
-    docopt \
-    jupyterlab \
-    nltk \
-    numpy \
-    pandas \
+    altair=4.1.* \
+    altair_saver=0.5.* \
+    docopt=0.6.* \
+    jupyterlab=2.2.* \
+    nltk=3.4.* \
+    numpy=1.19.* \
+    pandas=1.1.* \
     scikit-learn \
     pandas-profiling \
     vega \
     vega_datasets \
     lxml 
 
-RUN conda -update -y --all
+RUN conda update -y --all
 
 # Install altair saver dependencies
 RUN conda install -y -c conda-forge/label/gcc7 selenium && \
