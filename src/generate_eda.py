@@ -27,7 +27,11 @@ from selenium import webdriver
 from altair_saver import save
 from webdriver_manager.chrome import ChromeDriverManager
 
-driver = webdriver.Chrome(ChromeDriverManager().install())
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+driver = webdriver.Chrome(ChromeDriverManager().install(),chrome_options=chrome_options)
 alt.data_transformers.disable_max_rows()
 args = docopt(__doc__)
 
