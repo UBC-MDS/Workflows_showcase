@@ -56,9 +56,7 @@ def main(input_file_path, output_folder_path, model, filename_prefix=""):
     else:
         confusion_matrix = plot_confusion_matrix(model, X_test, y_test, display_labels=["Bad", "Good"],
                       values_format="d", cmap=plt.cm.Blues);
-                      #CHECK IF NEED TO ADD NEUTRAL BACK IN AFTER TRYING WITH POLARIZED MODEL
 
-    #save_matrix(confusion_matrix, output_folder_path, 'confusion_matrix')
     save_matrix(confusion_matrix, output_folder_path, "confusion_matrix", filename_prefix)
 
 
