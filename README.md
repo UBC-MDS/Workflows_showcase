@@ -13,8 +13,7 @@ This is Group 25's project for DSCI 522(Data Science Workflows); which is a cour
 
 For this project, we will be using data containing [Comic Book Characters](https://github.com/rudeboybert/fivethirtyeight/tree/master/data-raw/comic-characters). The data comes from [Marvel Wikia](https://marvel.fandom.com/wiki/Marvel_Database) and [DC Wikia](https://dc.fandom.com/wiki/DC_Comics_Database). We are interested in the following question:
 
-> 1. Predictive Question: What are the most important features in determining a comic book characters' alignment? 
-> 2. Exploratory Question: How are they changing over time?
+> Predictive Question: What are the most important features in determining a comic book characters' alignment? 
 
 Alignment target is categorized into three classes from our data set:
 - good (hero) 
@@ -22,8 +21,6 @@ Alignment target is categorized into three classes from our data set:
 - neutral.
 
 To answer the first predictive question, we tested models such as random forest, decision tree and logistic regression because the majority of the variables are categorical, and they also contain missing values to some extent. The features given in the data set that might correlate with the alignment could be `ID`(this is a categorical variable), `EYE`, `HAIR`, `SEX`, `APPEARANCES`, `publisher` and `year`. 
-
-The plan for answering the second question is to start from scatter-plotting each key variables from analysis above against year to visualize any trend. A regression analysis is a good methodology to interpret the relationship between each variable and `year`. Autocorrelation may be a good factor to look into but as the topic has yet been studied we will temporarily move it to the limitation section for future development.
 
 <!-- #region -->
 ### Usage and Flowchart
