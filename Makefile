@@ -78,9 +78,29 @@ results/models/polarized_optimized_model.pkl : \
 		    -i data/processed/character_features_polar_train.csv \
 			-o results -f polarized_ -v
 
+# Machine learning model test
+results/tables/confusion_matrix.png : \
+    results/tables/polarized_optimized_model.pkl \
+	src/predict_test.py
+	    python src/predict_test.py \
+		    -i data/processed/character_features_test.csv \
+			-o results \
+			-m results/models/optimized_model.pkl \
+			-v
+
+# Machine learning model test no neutrals
+results/tables/polarized_confusion_matrix.png : \
+    results/tables/confusion_matrix.png \
+		src/predict_test.py
+	    python src/predict_test.py \
+		    -i data/processed/character_features_polarized_test.csv \
+			-o results -f polarized_ \
+			-m results/models/polarized_optimized_model.pkl \
+			-v
+
 # Feature importance analysis
 results/figures/importance.png : \
-    results/tables/polarized_optimized_model.pkl \
+    results/tables/polarized_confusion_matrix.png \
 	src/analysis_feature.py
 		python src/analysis_feature.py \
 	    	-i results/models/optimized_model.pkl \
@@ -95,7 +115,8 @@ report/summary_report.md : \
 	results/tables/dataset_overview.pkl \
 	results/tables/feature_overview.pkl \
     results/figures/model_comparison.png \
-	results/figures/importance.png 
+		results/tables/confusion_matrix.png \
+	results/figures/importance.png
 	    jupyter nbconvert --to html report/summary_report.ipynb --no-input
 
 clean :
