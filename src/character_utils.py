@@ -21,6 +21,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from pylab import savefig
+
 def validate_inputs(input_file_path, output_dir_path):
     """
     Validates input argument paths.
@@ -52,7 +54,7 @@ def validate_inputs(input_file_path, output_dir_path):
     assert os.path.exists(output_dir_path + "/figures"), f"Invalid output path: {output_dir_path}/figures"
     assert os.path.exists(output_dir_path + "/tables"), f"Invalid output path: {output_dir_path}/tables"
     assert os.path.exists(output_dir_path + "/models"), f"Invalid output path: {output_dir_path}/models"
-    
+
 
 def read_input_file(input_file_path, verbose):
     """
@@ -75,20 +77,20 @@ def read_input_file(input_file_path, verbose):
         sys.exit()
 
     # TODO possibly move this to a config or test script to remove magic values
-    combined_columns = ['name', 
-                        'id', 
-                        'align', 
-                        'eye', 
-                        'hair', 
-                        'sex', 
+    combined_columns = ['name',
+                        'id',
+                        'align',
+                        'eye',
+                        'hair',
+                        'sex',
                         'gsm',
-                        'appearances', 
-                        'first_appearance', 
-                        'year', 
-                        'publisher', 
-                        'is_common', 
-                        'name_len', 
-                        'has_last_name', 
+                        'appearances',
+                        'first_appearance',
+                        'year',
+                        'publisher',
+                        'is_common',
+                        'name_len',
+                        'has_last_name',
                         'appear_per_yr']
 
     if not all([item in input_df.columns for item in combined_columns]):
@@ -102,7 +104,7 @@ def render_table(data, col_width=3.0, row_height=0.625, font_size=14,
                      header_color='#40466e', row_colors=['#f1f1f2', 'w'], edge_color='w',
                      bbox=[0, 0, 1, 1], header_columns=0,
                      ax=None, **kwargs):
-    
+
     """[Taken from ref: https://stackoverflow.com/questions/19726663/how-to-save-the-pandas-dataframe-series-data-as-a-figure]
        [Prints given dataframe in a nice format, that is easy to save]
     Parameters
@@ -159,3 +161,6 @@ def save_img_large(data_frame, output_dir, file_name, filename_prefix = ""):
         data_frame.to_pickle(output_dir + "/tables/" + filename_prefix + file_name + ".pkl")
         fig_1, ax_1 = render_table(data_frame, header_columns=0, col_width=9)
         fig_1.savefig(output_dir + "/figures/" + filename_prefix + file_name)
+
+def save_matrix(matrix, output_folder, file_name, filename_prefix = ""):
+    matrix.figure_.savefig(output_folder + "/figures/" + filename_prefix + file_name)
