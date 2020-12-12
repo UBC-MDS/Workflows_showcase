@@ -243,11 +243,10 @@ def generate_align_vs_year(data_frame, output_folder, file_name):
     None
     """
     align_vs_year = (alt.Chart(data_frame, title = "Alignment over Time").mark_line().encode(
-        alt.X('year:T', title = 'Year(1935-2013)'),
+        alt.X('year', title = 'Year(1935-2013)', axis=alt.Axis(format='t')),
         y = alt.Y('count()', title = "Character Count"),
-        color = alt.Color("align", title="Alignment"),
-        tooltip = 'year'
-        ).properties(height=300, width=500)).interactive()
+        color = alt.Color("align", title="Alignment")
+    ).properties(height=300, width=500))
 
     save(align_vs_year, output_folder +"/figures/" + file_name + '.png', method='selenium', webdriver=driver)
     if verbose: print("Alignment vs year chart created, saved to " + 
