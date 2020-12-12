@@ -5,11 +5,12 @@ Date: Dec 9, 2020
 
 This script takes in a trained model and runs it against the test set and returns a confusion matrix outline the results.
 
-Usage: predict_test.py -i=<input> -o=<output> [-f <filename>] [-v]
+Usage: predict_test.py -i=<input> -o=<output> -m=<model> [-f <filename>] [-v]
 
 Options:
 -i <input>, --input <input>                 Local processed training data csv file in directory
 -o <output>, --output <output>              Local output directory for created pngs
+-m <model>, --model <model>                 Model to be used for testing
 -f <filename>, --filename <filename>        Add a prefix to the saved filename
 [-v]                                        Report verbose output of dataset retrieval process
 """
@@ -35,9 +36,9 @@ from pylab import savefig
 args = docopt(__doc__)
 
 
-def main(input_file_path, output_folder_path):
-    model = pd.read_pickle('results/models/optimized_model.pkl')
-    print("\n\n##### Model imported!")
+def main(input_file_path, output_folder_path, model, filename_prefix=""):
+    model = pd.read_pickle(model)
+    if model: print("\n\n##### Model imported!")
 
     test_df =  read_input_file(input_file_path, verbose=True)
 
@@ -48,10 +49,17 @@ def main(input_file_path, output_folder_path):
     print("\n\n##### Model Score:")
     print(f'{score}')
 
-    confusion_matrix = plot_confusion_matrix(model, X_test, y_test, display_labels=["Bad", "Neutral", "Good"],
+    if input_file_path == "data/processed/character_features_test.csv":
+        confusion_matrix = plot_confusion_matrix(model, X_test, y_test, display_labels=["Bad", "Neutral", "Good"],
                       values_format="d", cmap=plt.cm.Blues);
 
-    save_matrix(confusion_matrix, output_folder_path, 'confusion_matrix')
+    else:
+        confusion_matrix = plot_confusion_matrix(model, X_test, y_test, display_labels=["Bad", "Good"],
+                      values_format="d", cmap=plt.cm.Blues);
+                      #CHECK IF NEED TO ADD NEUTRAL BACK IN AFTER TRYING WITH POLARIZED MODEL
+
+    #save_matrix(confusion_matrix, output_folder_path, 'confusion_matrix')
+    save_matrix(confusion_matrix, output_folder_path, "confusion_matrix", filename_prefix)
 
 
 if __name__ == "__main__":
@@ -59,7 +67,11 @@ if __name__ == "__main__":
     verbose = args["-v"]
     input_file = args["--input"]
     output_dir = args["--output"]
+    model = args["--model"]
     filename_prefix = args["--filename"]
-    main(input_file, output_dir)
+    if filename_prefix:
+        main(input_file, output_dir, model, filename_prefix)
+    else:
+        main(input_file, output_dir, model)
 
 
