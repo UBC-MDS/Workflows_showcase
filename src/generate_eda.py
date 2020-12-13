@@ -180,7 +180,7 @@ def generate_feature_overview(data_frame, output_folder, file_name):
         distinct_class[col]=len(list(data_frame[col].unique()))
 
     features_frame=pd.DataFrame([distinct_class, nonnull_count]).T.reset_index()
-    features_frame.columns=["Features","Dictinct Class", "Non-Null Count"]
+    features_frame.columns=["Features","Distinct Class", "Non-Null Count"]
     features_frame["Missing Percentage"]=round((len(data_frame) - features_frame["Non-Null Count"])/len(data_frame)*100,2)
 
     features_frame.to_pickle(output_folder + "/tables/" + file_name + ".pkl")
