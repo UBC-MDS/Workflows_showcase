@@ -34,32 +34,17 @@ There are three ways to reproduce our analysis:
 
 To replicate the analysis, clone this GitHub repository, and install the docker by running the following commands at the command line/terminal from the root directory of this project:
 
-On Windows-based operating systems:
+**IMPORTANT**: You must increase your Docker container memory resource allocation to 4GB: 
+* In Docker Desktop Settings -> Resources -> <Increase to 4GB>
 
 ```
-docker run --rm -v......
-```
-
-
-On Mac operating systems:
-
-```
-docker run --rm -v PATH_ON_YOUR_COMPUTER:/User/data_analysis_eg ttimbers/data_analysis_pipeline_eg make -C '/home/data_analysis_eg' all
+docker run --rm -v <LOCAL PATH TO REPO>:/home cmmclaug/dsci522_workflows_showcase:0.0.1 make -C /home all
 ```
 
 To remove all the temporary files created by this work flow analysis, you can run the following commands at the command line/terminal from the root directory of this project:
 
-On Windows-based operating systems:
-
 ```
-docker run --rm -v......
-```
-
-
-On Mac operating systems:
-
-```
-docker run --rm -v PATH_ON_YOUR_COMPUTER:/User/data_analysis_eg ttimbers/data_analysis_pipeline_eg make -C '/home/data_analysis_eg' all
+docker run --rm -v <LOCAL PATH TO REPO>:/home cmmclaug/dsci522_workflows_showcase:0.0.1 make -C /home clean
 ```
 
 #### 2. Using `Make`
