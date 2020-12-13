@@ -84,10 +84,40 @@ To produce the EDA analysis, the generate_eda.py script can be executed by using
 python src/generate_eda.py -i data/processed/clean_characters.csv -o results
 ```
 
-To produce the machine learning analysis results, the analysis.py script can be executed by using the following command:
+To produce the model selection analysis results on full alignment data, the model_selection.py script can be executed by using the following command:
 
 ```
-python src/analysis.py -i data/processed/clean_characters_train.csv -o results -v
+python src/model_selection.py -i data/processed/clean_characters_train.csv -o results -v
+```
+
+To produce the model selection analysis results on only polarized good-bad alignment characters, the model_selection.py script can be executed by using the following command:
+
+```
+python src/model_selection.py -i data/processed/character_features_polar_train.csv -o results -v
+```
+
+To produce the model optimization analysis results on full alignment data, the model_selection.py script can be executed by using the following command:
+
+```
+python src/model_optimize.py -i data/processed/character_features_train.csv -o results -v
+```
+
+To produce the optimized model analysis results on only polarized good-bad alignment characters, the predict_test.py script can be executed by using the following command:
+
+```
+python src/predict_test.py -i data/processed/character_features_polar_train.csv -o results -v
+```
+
+To tet the optimized model on the test set of all alignment characters, the predict_test.py script can be executed by using the following command:
+
+```
+python src/predict_test.py -i data/processed/character_features_polar_train.csv -m results/models/optimized_model.pkl -v
+```
+
+To tet the optimized model on the test set of polarized alignment characters, the predict_test.py script can be executed by using the following command:
+
+```
+python src/predict_test.py -i data/processed/character_features_polarized_test.csv -m results/models/polarized_optimized_model.pkl -f polarized_ -v
 ```
 
 
