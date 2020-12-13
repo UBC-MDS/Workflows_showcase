@@ -23,27 +23,63 @@ Alignment target is categorized into three classes from our data set:
 To answer the first predictive question, we tested models such as random forest, decision tree and logistic regression because the majority of the variables are categorical, and they also contain missing values to some extent. The features given in the data set that might correlate with the alignment could be `ID`(this is a categorical variable), `EYE`, `HAIR`, `SEX`, `APPEARANCES`, `publisher` and `year`. 
 
 <!-- #region -->
-### Usage and Flowchart
-There are two ways to reproduce our analysis:
 
-#### 1. Using `Make`
+### Report
+The final html report can be found [here](http://htmlpreview.github.io/?https://github.com/UBC-MDS/Workflows_showcase/blob/main/report/summary_report.html).
+
+### Usage and Flowchart
+There are three ways to reproduce our analysis:
+
+#### 1. Using Docker
+
+To replicate the analysis, clone this GitHub repository, and install the docker by running the following commands at the command line/terminal from the root directory of this project:
+
+On Windows-based operating systems:
+
+```
+docker run --rm -v......
+```
+
+
+On Mac operating systems:
+
+```
+docker run --rm -v PATH_ON_YOUR_COMPUTER:/User/data_analysis_eg ttimbers/data_analysis_pipeline_eg make -C '/home/data_analysis_eg' all
+```
+
+To remove all the temporary files created by this work flow analysis, you can run the following commands at the command line/terminal from the root directory of this project:
+
+On Windows-based operating systems:
+
+```
+docker run --rm -v......
+```
+
+
+On Mac operating systems:
+
+```
+docker run --rm -v PATH_ON_YOUR_COMPUTER:/User/data_analysis_eg ttimbers/data_analysis_pipeline_eg make -C '/home/data_analysis_eg' all
+```
+
+#### 2. Using `Make`
 
 To replicate the analysis, clone this GitHub repository, install the dependencies given in [environment file](https://github.com/UBC-MDS/Workflows_showcase/blob/main/env/env.yaml), and run the following commands at the command line/terminal from the root directory of this project: 
 
-`
+```
 make all
-`
+```
 
 to execute work flow analysis, and
 
-`
+```
 make clean
-`
+```
 
 to remove all the temporary files created by this work flow analysis.
 
 
-#### 2. Running individual scripts
+#### 3. Running Individual Scripts
 
 The datasets can be collected from the source below.
 
@@ -79,6 +115,9 @@ python src/analysis_feature.py -i results/models/optimized_model.pkl -j data/pro
 
 
 ![Flow Chart](img/flow_chart00.png)
+
+### Makefile Dependency
+
 
 
 ### Dependencies
@@ -120,10 +159,6 @@ In analysis, by using the cross-validation on train set and decided which models
 - Logistic Regression.
 
 The best validation accuracy is obtained by Random Forest Classifier, so further analysis is done to get Forest model comparison between Random Forest Classifier, LGBM Classifier and Cat Boost Classifier. After that hyperparameter optimization is done with model LGBM Classifier to get the best scoring model. Using the best model resulting in analysis.py, we obtained the feature importance table used in tree splits. More details can be found [here](https://github.com/UBC-MDS/Workflows_showcase/blob/main/report/summary_report.ipynb).
-
-
-### Report
-The final report can be found [here](https://github.com/UBC-MDS/Workflows_showcase/blob/main/report/summary_report.ipynb).
 
 ### Releases
 
