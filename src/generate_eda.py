@@ -180,7 +180,7 @@ def generate_feature_overview(data_frame, output_folder, file_name):
         distinct_class[col]=len(list(data_frame[col].unique()))
 
     features_frame=pd.DataFrame([distinct_class, nonnull_count]).T.reset_index()
-    features_frame.columns=["Features","Dictinct Class", "Non-Null Count"]
+    features_frame.columns=["Features","Distinct Class", "Non-Null Count"]
     features_frame["Missing Percentage"]=round((len(data_frame) - features_frame["Non-Null Count"])/len(data_frame)*100,2)
 
     features_frame.to_pickle(output_folder + "/tables/" + file_name + ".pkl")
@@ -243,11 +243,10 @@ def generate_align_vs_year(data_frame, output_folder, file_name):
     None
     """
     align_vs_year = (alt.Chart(data_frame, title = "Alignment over Time").mark_line().encode(
-        alt.X('year:T', title = 'Year(1935-2013)'),
+        alt.X('year', title = 'Year(1935-2013)', axis=alt.Axis(format='t')),
         y = alt.Y('count()', title = "Character Count"),
-        color = alt.Color("align", title="Alignment"),
-        tooltip = 'year'
-        ).properties(height=300, width=500)).interactive()
+        color = alt.Color("align", title="Alignment")
+    ).properties(height=300, width=500))
 
     save(align_vs_year, output_folder +"/figures/" + file_name + '.png', method='selenium', webdriver=driver)
     if verbose: print("Alignment vs year chart created, saved to " + 
