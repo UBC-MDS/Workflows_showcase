@@ -25,7 +25,7 @@ To answer the first predictive question, we tested models such as random forest,
 <!-- #region -->
 
 ### Report
-The final html report can be found [here](http://htmlpreview.github.io/?https://github.com/UBC-MDS/Workflows_showcase/blob/main/report/summary_report.html).
+The final html report can be found [here](https://github.com/UBC-MDS/Workflows_showcase/blob/main/report/summary_report.ipynb).
 
 ### Usage and Flowchart
 There are three ways to reproduce our analysis:
