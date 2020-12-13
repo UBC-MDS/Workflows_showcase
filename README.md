@@ -130,7 +130,7 @@ python src/analysis_feature.py -i results/models/optimized_model.pkl -j data/pro
 
 ### Makefile Dependency
 
-
+![Makefile](img/Makefile.png)
 
 ### Dependencies
 
