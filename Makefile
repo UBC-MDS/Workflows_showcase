@@ -114,8 +114,10 @@ report/summary_report.md : \
     results/figures/alignment_over_time.png \
 	results/figures/feature_overview.png \
 	results/figures/model_type_comparison.png \
+	results/figures/forest_model_comparison.png \
+	results/tables/polarized_optimized_model.pkl \
     results/figures/optimized_model.png \
-		results/tables/confusion_matrix.png \
+	results/tables/confusion_matrix.png \
 	results/figures/importance.png
 	    jupyter nbconvert --to html report/summary_report.ipynb --no-input
 
