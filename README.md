@@ -180,7 +180,7 @@ The best validation accuracy is obtained by Random Forest Classifier, so further
 
 [Milestone 3: 0.2.0](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.2.0)
 
-[Milestone 4: 0.3.0](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.3.0)
+[Milestone 4: 0.4.0](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.4.0)
 
 
 ### References
