@@ -32,10 +32,7 @@ There are three ways to reproduce our analysis:
 
 #### 1. Using Docker
 
-To replicate the analysis, clone this GitHub repository, and install the docker by running the following commands at the command line/terminal from the root directory of this project:
-
-**IMPORTANT**: You must increase your Docker container memory resource allocation to 4GB: 
-* In Docker Desktop Settings -> Resources -> <Increase to 4GB>
+To replicate the analysis, clone this GitHub repository, and install the docker by running the following commands at the command line/terminal from the root directory of this project.
 
 ```
 docker run --rm -v <LOCAL PATH TO REPO>:/home cmmclaug/dsci522_workflows_showcase:0.0.1 make -C /home all
