@@ -51,8 +51,10 @@ data/processed/character_features_deploy.csv : \
 	    -o data/processed/character_features.csv -v
 
 # Machine learning model selection
-results/tables/model_comparison.pkl \
-results/figures/model_comparison.png : \
+results/tables/model_type_comparison.pkl \
+results/tables/forest_model_comparison.pkl \
+results/figures/forest_model_comparison.png \
+results/figures/model_type_comparison.png : \
     data/processed/character_features_train.csv \
 	src/model_selection.py
 	    python src/model_selection.py \
@@ -110,12 +112,12 @@ results/figures/importance.png : \
 # Generate summary markdown report
 report/summary_report.md : \
     results/figures/alignment_over_time.png \
-    results/figures/alignment_vs_features.png \
-	results/figures/appearances_by_alignment.png \
-	results/tables/dataset_overview.pkl \
-	results/tables/feature_overview.pkl \
-    results/figures/model_comparison.png \
-		results/tables/confusion_matrix.png \
+	results/figures/feature_overview.png \
+	results/figures/model_type_comparison.png \
+	results/figures/forest_model_comparison.png \
+	results/tables/polarized_optimized_model.pkl \
+    results/figures/optimized_model.png \
+	results/tables/confusion_matrix.png \
 	results/figures/importance.png
 	    jupyter nbconvert --to html report/summary_report.ipynb --no-input
 

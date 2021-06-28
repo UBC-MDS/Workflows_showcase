@@ -25,17 +25,14 @@ To answer the first predictive question, we tested models such as random forest,
 <!-- #region -->
 
 ### Report
-The final html report can be found [here](http://htmlpreview.github.io/?https://github.com/UBC-MDS/Workflows_showcase/blob/main/report/summary_report.html).
+The final html report can be found [here](https://github.com/UBC-MDS/Workflows_showcase/blob/main/report/summary_report.ipynb).
 
 ### Usage and Flowchart
 There are three ways to reproduce our analysis:
 
 #### 1. Using Docker
 
-To replicate the analysis, clone this GitHub repository, and install the docker by running the following commands at the command line/terminal from the root directory of this project:
-
-**IMPORTANT**: You must increase your Docker container memory resource allocation to 4GB: 
-* In Docker Desktop Settings -> Resources -> <Increase to 4GB>
+To replicate the analysis, clone this GitHub repository, and install the docker by running the following commands at the command line/terminal from the root directory of this project.
 
 ```
 docker run --rm -v <LOCAL PATH TO REPO>:/home cmmclaug/dsci522_workflows_showcase:0.0.1 make -C /home all
@@ -84,10 +81,40 @@ To produce the EDA analysis, the generate_eda.py script can be executed by using
 python src/generate_eda.py -i data/processed/clean_characters.csv -o results
 ```
 
-To produce the machine learning analysis results, the analysis.py script can be executed by using the following command:
+To produce the model selection analysis results on full alignment data, the model_selection.py script can be executed by using the following command:
 
 ```
-python src/analysis.py -i data/processed/clean_characters_train.csv -o results -v
+python src/model_selection.py -i data/processed/clean_characters_train.csv -o results -v
+```
+
+To produce the model selection analysis results on only polarized good-bad alignment characters, the model_selection.py script can be executed by using the following command:
+
+```
+python src/model_selection.py -i data/processed/character_features_polar_train.csv -o results -v
+```
+
+To produce the model optimization analysis results on full alignment data, the model_selection.py script can be executed by using the following command:
+
+```
+python src/model_optimize.py -i data/processed/character_features_train.csv -o results -v
+```
+
+To produce the optimized model analysis results on only polarized good-bad alignment characters, the predict_test.py script can be executed by using the following command:
+
+```
+python src/predict_test.py -i data/processed/character_features_polar_train.csv -o results -v
+```
+
+To tet the optimized model on the test set of all alignment characters, the predict_test.py script can be executed by using the following command:
+
+```
+python src/predict_test.py -i data/processed/character_features_polar_train.csv -m results/models/optimized_model.pkl -v
+```
+
+To tet the optimized model on the test set of polarized alignment characters, the predict_test.py script can be executed by using the following command:
+
+```
+python src/predict_test.py -i data/processed/character_features_polarized_test.csv -m results/models/polarized_optimized_model.pkl -f polarized_ -v
 ```
 
 
@@ -103,7 +130,7 @@ python src/analysis_feature.py -i results/models/optimized_model.pkl -j data/pro
 
 ### Makefile Dependency
 
-
+![Makefile](img/Makefile.png)
 
 ### Dependencies
 
@@ -152,6 +179,8 @@ The best validation accuracy is obtained by Random Forest Classifier, so further
 [Milestone 2: 0.1.0](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.1.0)
 
 [Milestone 3: 0.2.0](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.2.0)
+
+[Milestone 4: 0.4.0](https://github.com/UBC-MDS/Workflows_showcase/releases/tag/0.4.0)
 
 
 ### References
